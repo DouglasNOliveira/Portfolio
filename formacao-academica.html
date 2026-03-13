@@ -1,116 +1,54 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formação Acadêmica</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        header {
-            background-color: #007acc;
-            color: white;
-            width: 100%;
-            padding: 20px 0;
-            text-align: center;
-        }
-
-        nav {
-            margin-top: 20px;
-            text-align: center;
-            width: 100%;
-            background-color: #007acc;
-            padding: 10px 0;
-        }
-
-        nav a {
-            text-decoration: none;
-            background-color: white;
-            color: #007acc;
-            padding: 10px 20px;
-            margin: 0 5px;
-            border-radius: 5px;
-            display: inline-block;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        nav a:hover {
-            background-color: #005f99;
-            color: white;
-        }
-
-        main {
-            background-color: white;
-            max-width: 800px;
-            margin: 20px;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        h1, h2 {
-            margin-top: 0;
-        }
-
-        p {
-            line-height: 1.6;
-        }
-
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        ul li {
-            margin-bottom: 10px;
-        }
-
-        ul li a {
-            color: #007acc;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        ul li a:hover {
-            color: #005f99;
-        }
-    </style>
+    <title>Formação Acadêmica | Portfólio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/style.css">
 </head>
-
 <body>
     <header>
-        <h1>Formação Acadêmica</h1>
+        <div class="hero">
+            <h1>Trajetória Acadêmica</h1>
+            <h2>Formação orientada por análise, educação e desenvolvimento contínuo</h2>
+        </div>
     </header>
 
-    <nav>
-        <a href="sobre-mim.html">Sobre Mim</a>
-        <a href="formacao-academica.html">Formação Acadêmica</a>
-        <a href="portfolio.html">Portfólio</a>
-        <a href="contato.html">Contato</a>
-    </nav>
+    <main class="container">
+        <nav class="tabs" aria-label="Navegação principal">
+            <a class="tab-link" href="sobre-mim.html">Sobre Mim</a>
+            <a class="tab-link active" href="formacao-academica.html">Formação Acadêmica</a>
+            <a class="tab-link" href="portfolio.html">Portfólio</a>
+            <a class="tab-link" href="contato.html">Contato</a>
+        </nav>
 
-    <main>
-        <h2>Formação Acadêmica</h2>
-        <p>Abaixo estão as informações sobre minha formação acadêmica:</p>
+        <section class="card highlight">
+            <h2>Visão geral</h2>
+            <p class="lead">Minha formação combina sólida base científica com evolução contínua para áreas orientadas por tecnologia e dados.</p>
+        </section>
 
-        <ul>
-            <li>
-                <strong>Licenciado em Física</strong> pela Universidade Tecnológica Federal do Paraná
-            </li>
-            <li>
-                <strong>Acadêmico em Ciência de Dados</strong> pela UNINTER
-            </li>
-        </ul>
+        <section class="grid cols-2">
+            <article class="topic-card">
+                <div class="badge success">Concluído</div>
+                <h3>Licenciatura em Física</h3>
+                <p class="lead">Universidade Tecnológica Federal do Paraná</p>
+                <p class="muted">Formação que fortaleceu raciocínio analítico, modelagem de problemas, instrumentação e comunicação técnica.</p>
+            </article>
+
+            <article class="topic-card">
+                <div class="badge muted">Em andamento</div>
+                <h3>Ciência de Dados</h3>
+                <p class="lead">UNINTER</p>
+                <p class="muted">Aprofundamento em análise de dados, estruturação de informação e aplicação prática de métodos quantitativos.</p>
+            </article>
+        </section>
     </main>
-</body>
 
+    <footer class="footer">
+        2026 - Portfólio de Douglas Nascimento de Oliveira
+    </footer>
+</body>
 </html>

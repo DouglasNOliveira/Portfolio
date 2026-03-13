@@ -1,103 +1,69 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sobre Mim</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        header {
-            background-color: #007acc;
-            color: white;
-            width: 100%;
-            padding: 20px 0;
-            text-align: center;
-        }
-
-        nav {
-            margin-top: 20px;
-            text-align: center;
-            width: 100%;
-            background-color: #007acc;
-            padding: 10px 0;
-        }
-
-        nav a {
-            text-decoration: none;
-            background-color: white;
-            color: #007acc;
-            padding: 10px 20px;
-            margin: 0 5px;
-            border-radius: 5px;
-            display: inline-block;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        nav a:hover {
-            background-color: #005f99;
-            color: white;
-        }
-
-        main {
-            background-color: white;
-            max-width: 800px;
-            margin: 20px;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        h1, h2 {
-            margin-top: 0;
-        }
-
-        p {
-            line-height: 1.6;
-        }
-
-        img {
-            display: block;
-            max-width: 150px;
-            margin: 20px auto;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-        }
-    </style>
+    <title>Sobre Mim | Portfólio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/style.css">
 </head>
-
 <body>
     <header>
-        <h1>Sobre Mim</h1>
+        <div class="hero">
+            <h1>Douglas Nascimento de Oliveira</h1>
+            <h2>Física, ciência de dados, educação e desenvolvimento de soluções digitais</h2>
+        </div>
     </header>
 
-    <nav>
-        <a href="sobre-mim.html">Sobre Mim</a>
-        <a href="formacao-academica.html">Formação Acadêmica</a>
-        <a href="portfolio.html">Portfólio</a>
-        <a href="contato.html">Contato</a>
-    </nav>
+    <main class="container">
+        <nav class="tabs" aria-label="Navegação principal">
+            <a class="tab-link active" href="sobre-mim.html">Sobre Mim</a>
+            <a class="tab-link" href="formacao-academica.html">Formação Acadêmica</a>
+            <a class="tab-link" href="portfolio.html">Portfólio</a>
+            <a class="tab-link" href="contato.html">Contato</a>
+        </nav>
 
-    <main>
-        <img src="minha-foto.jpg" alt="Minha Foto">
+        <section class="card highlight">
+            <div class="profile-summary">
+                <img class="profile-photo" src="minha-foto.jpg" alt="Foto de Douglas Nascimento de Oliveira">
+                <div>
+                    <div class="badge success">Perfil Ativo</div>
+                    <h2>Quem sou eu</h2>
+                    <p class="lead">Olá! Meu nome é Douglas Nascimento de Oliveira. Sou formado em Física, atualmente curso Ciência de Dados e sigo ampliando minha atuação em desenvolvimento de software, com atenção especial a soluções educacionais e aplicações móveis.</p>
+                    <div class="notice info-strip">
+                        <div class="info-icon" aria-hidden="true">i</div>
+                        <div>
+                            <strong>Direção profissional</strong>
+                            <div>Busco unir base analítica, experiência técnica e visão prática para construir produtos úteis, claros e com aplicação real.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        <h2>Quem Sou Eu?</h2>
-        <p>Olá! Meu nome é Douglas Nascimento de Oliveira. Sou formado em Física e atualmente estou cursando Ciência de Dados. Além disso, estou me especializando em desenvolvimento de aplicativos móveis utilizando Flutter.</p>
+        <section class="grid cols-2">
+            <article class="topic-card">
+                <h3>Minha experiência</h3>
+                <p class="lead">Tenho experiência em projetos com Arduino e robótica, com foco em integrar hardware e software em contextos educacionais e experimentais.</p>
+                <p class="muted">Atualmente desenvolvo iniciativas como uma trena digital e um experimento de efeito fotoelétrico pensado para uso escolar.</p>
+            </article>
 
-        <h2>Minha Experiência</h2>
-        <p>Tenho experiência em desenvolvimento de projetos envolvendo Arduino e robótica, com foco em integrar essas tecnologias a aplicativos móveis. Atualmente, estou trabalhando em um projeto de trena digital e um experimento de efeito fotoelétrico para aplicação em contexto escolar.</p>
-
-        <h2>Interesses</h2>
-        <p>Meus principais interesses são no campo da educação, tecnologia e desenvolvimento de software. Gosto de explorar como essas áreas podem se interseccionar para criar soluções inovadoras e impactantes.</p>
+            <article class="topic-card">
+                <h3>Interesses principais</h3>
+                <ul class="bullet-list">
+                    <li>Educação apoiada por tecnologia</li>
+                    <li>Ciência de dados aplicada a problemas concretos</li>
+                    <li>Desenvolvimento de software e aplicações móveis</li>
+                    <li>Projetos que combinam análise, interface e impacto prático</li>
+                </ul>
+            </article>
+        </section>
     </main>
-</body>
 
+    <footer class="footer">
+        2026 - Portfólio de Douglas Nascimento de Oliveira
+    </footer>
+</body>
 </html>

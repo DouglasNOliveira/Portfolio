@@ -1,153 +1,117 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contato</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        header {
-            background-color: #007acc;
-            color: white;
-            width: 100%;
-            padding: 20px 0;
-            text-align: center;
-        }
-
-        nav {
-            margin-top: 20px;
-            text-align: center;
-            width: 100%;
-            background-color: #007acc;
-            padding: 10px 0;
-        }
-
-        nav a {
-            text-decoration: none;
-            background-color: white;
-            color: #007acc;
-            padding: 10px 20px;
-            margin: 0 5px;
-            border-radius: 5px;
-            display: inline-block;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        nav a:hover {
-            background-color: #005f99;
-            color: white;
-        }
-
-        main {
-            background-color: white;
-            max-width: 800px;
-            margin: 20px;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        h1, h2 {
-            margin-top: 0;
-        }
-
-        p {
-            line-height: 1.6;
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-        }
-
-        form label {
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        form input, form textarea {
-            margin-bottom: 10px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        form button {
-            background-color: #007acc;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        form button:hover {
-            background-color: #005f99;
-        }
-
-        .linkedin {
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .linkedin a {
-            text-decoration: none;
-            color: #007acc;
-            font-weight: bold;
-            transition: color 0.3s;
-        }
-
-        .linkedin a:hover {
-            color: #005f99;
-        }
-    </style>
+    <title>Contato | Portfólio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/style.css">
 </head>
-
 <body>
     <header>
-        <h1>Contato</h1>
+        <div class="hero">
+            <h1>Contato Profissional e Pessoal</h1>
+            <h2>Contato direto para propostas, parcerias e trocas técnicas</h2>
+        </div>
     </header>
 
-    <nav>
-        <a href="sobre-mim.html">Sobre Mim</a>
-        <a href="formacao-academica.html">Formação Acadêmica</a>
-        <a href="portfolio.html">Portfólio</a>
-        <a href="contato.html">Contato</a>
-    </nav>
+    <main class="container">
+        <nav class="tabs" aria-label="Navegação principal">
+            <a class="tab-link" href="sobre-mim.html">Sobre Mim</a>
+            <a class="tab-link" href="formacao-academica.html">Formação Acadêmica</a>
+            <a class="tab-link" href="portfolio.html">Portfólio</a>
+            <a class="tab-link active" href="contato.html">Contato</a>
+        </nav>
 
-    <main>
-        <h2>Entre em Contato</h2>
-        <p>Se você deseja entrar em contato comigo, por favor, preencha o formulário abaixo ou envie um e-mail para <a href="mailto:douglas.dgs94@hotmail.com">douglas.dgs94@hotmail.com</a>.</p>
+        <section class="grid cols-2">
+            <article class="card highlight">
+                <h2>Entre em contato</h2>
+                <p class="lead">Se você deseja conversar sobre projetos, colaboração ou oportunidades, envie uma mensagem pelo formulário ou escreva para <a href="mailto:douglas.dgs94@hotmail.com">douglas.dgs94@hotmail.com</a>.</p>
 
-        <form action="mailto:douglas.dgs94@hotmail.com" method="post" enctype="text/plain">
-            <label for="name">Nome:</label>
-            <input type="text" id="name" name="name" required>
+                <form class="contact-form" id="contact-form">
+                    <div>
+                        <label for="name">Nome</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
 
-            <label for="email">E-mail:</label>
-            <input type="email" id="email" name="email" required>
+                    <div class="form-row">
+                        <div>
+                            <label for="email">E-mail</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                    </div>
 
-            <label for="message">Mensagem:</label>
-            <textarea id="message" name="message" rows="4" required></textarea>
+                    <div>
+                        <label for="message">Mensagem</label>
+                        <textarea id="message" name="message" rows="6" required></textarea>
+                    </div>
 
-            <button type="submit">Enviar</button>
-        </form>
+                    <button class="btn" type="submit">Enviar mensagem</button>
+                </form>
+            </article>
 
-        <div class="linkedin">
-            <p>Você também pode me encontrar no LinkedIn:</p>
-            <a href="https://www.linkedin.com/in/douglas-nascimento-de-oliveira" target="_blank">Douglas Nascimento de Oliveira</a>
-        </div>
+            <article class="card">
+                <h2>Redes sociais</h2>
+                <p class="lead">Canais para acompanhar meu trabalho e abrir uma conversa em outras plataformas.</p>
+                <div class="grid cols-3 cards-equal">
+                    <article class="topic-card">
+                        <h3>LinkedIn</h3>
+                        <p class="muted">Perfil profissional com trajetória, experiências e conexões.</p>
+                        <div class="actions">
+                            <a class="btn" href="https://www.linkedin.com/in/douglas-nascimento-de-oliveira" target="_blank" rel="noreferrer">Abrir LinkedIn</a>
+                        </div>
+                    </article>
+
+                    <article class="topic-card">
+                        <h3>Instagram</h3>
+                        <p class="muted">Perfil no Instagram para um contato mais pessoal.</p>
+                        <div class="actions">
+                            <a class="btn" href="https://www.instagram.com/doug_nsc" target="_blank" rel="noreferrer">Abrir Instagram</a>
+                        </div>
+                    </article>
+
+                    <article class="topic-card">
+                        <h3>GitHub</h3>
+                        <p class="muted">Perfil no GitHub para visualizar meus projetos e contribuições.</p>
+                        <div class="actions">
+                            <a class="btn" href="https://github.com/DouglasNOliveira" target="_blank" rel="noreferrer">Abrir GitHub</a>
+                        </div>
+                    </article>
+
+                    <article class="topic-card">
+                        <h3>Setlist.fm</h3>
+                        <p class="muted">Registro dos shows que compareci ao longo dos anos.</p>
+                        <div class="actions">
+                            <a class="btn" href="https://www.setlist.fm/user/doug_nsc" target="_blank" rel="noreferrer">Abrir setlist.fm</a>
+                        </div>
+                    </article>
+                </div>
+            </article>
+        </section>
     </main>
-</body>
 
+    <footer class="footer">
+        2026 - Portfólio de Douglas Nascimento de Oliveira
+    </footer>
+
+    <script>
+        const form = document.getElementById("contact-form");
+
+        form.addEventListener("submit", (event) => {
+            event.preventDefault();
+
+            const name = document.getElementById("name").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const message = document.getElementById("message").value.trim();
+
+            const subject = encodeURIComponent(`Contato pelo portfólio - ${name}`);
+            const body = encodeURIComponent(`${message}\n\n${name}\n${email}`);
+
+            window.location.href = `mailto:douglas.dgs94@hotmail.com?subject=${subject}&body=${body}`;
+        });
+    </script>
+</body>
 </html>
+
