@@ -48,7 +48,10 @@
                         <textarea id="message" name="message" rows="6" required></textarea>
                     </div>
 
-                    <button class="btn" type="submit">Enviar mensagem</button>
+                    <input type="text" name="_gotcha" class="contact-honeypot" tabindex="-1" autocomplete="off">
+                    <div id="form-status" class="form-status" aria-live="polite"></div>
+
+                    <button class="btn" id="submit-button" type="submit">Enviar mensagem</button>
                 </form>
             </article>
 
@@ -97,21 +100,52 @@
     </footer>
 
     <script>
-        const form = document.getElementById("contact-form");
+        const FORMSPREE_ENDPOINT = "https://formspree.io/f/maqpvley";
 
-        form.addEventListener("submit", (event) => {
+        const form = document.getElementById("contact-form");
+        const status = document.getElementById("form-status");
+        const submitButton = document.getElementById("submit-button");
+
+        function setStatus(message, type) {
+            status.textContent = message;
+            status.className = `form-status ${type}`;
+        }
+
+        form.addEventListener("submit", async (event) => {
             event.preventDefault();
 
-            const name = document.getElementById("name").value.trim();
-            const email = document.getElementById("email").value.trim();
-            const message = document.getElementById("message").value.trim();
+            if (FORMSPREE_ENDPOINT.includes("SEU_FORM_ID")) {
+                setStatus("Configure o endpoint do Formspree no arquivo contato.html para ativar o envio.", "error");
+                return;
+            }
 
-            const subject = encodeURIComponent(`Contato pelo portfólio - ${name}`);
-            const body = encodeURIComponent(`${message}\n\n${name}\n${email}`);
+            const formData = new FormData(form);
+            submitButton.disabled = true;
+            submitButton.textContent = "Enviando...";
+            setStatus("", "");
 
-            window.location.href = `mailto:douglas.dgs94@hotmail.com?subject=${subject}&body=${body}`;
+            try {
+                const response = await fetch(FORMSPREE_ENDPOINT, {
+                    method: "POST",
+                    headers: {
+                        Accept: "application/json"
+                    },
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error("Falha no envio");
+                }
+
+                form.reset();
+                setStatus("Mensagem enviada com sucesso.", "success");
+            } catch (error) {
+                setStatus("Não foi possível enviar a mensagem agora. Tente novamente em instantes.", "error");
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = "Enviar mensagem";
+            }
         });
     </script>
 </body>
 </html>
-
