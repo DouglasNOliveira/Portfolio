@@ -435,3 +435,79 @@ textarea:focus {
 
 
 
+
+.timeline-card {
+  overflow: hidden;
+}
+
+.timeline {
+  position: relative;
+  display: grid;
+  gap: 22px;
+  padding-left: 24px;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 67px;
+  top: 8px;
+  bottom: 8px;
+  width: 2px;
+  background: linear-gradient(180deg, #cfe0f1 0%, #8ab2d1 100%);
+}
+
+.timeline-item {
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr);
+  gap: 22px;
+  align-items: start;
+  position: relative;
+}
+
+.timeline-year {
+  position: relative;
+  font-weight: 800;
+  color: var(--primary);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding-top: 2px;
+}
+
+.timeline-year::after {
+  content: "";
+  position: absolute;
+  top: 8px;
+  right: -14px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 4px solid var(--primary);
+  box-shadow: 0 0 0 6px rgba(32, 121, 175, 0.12);
+}
+
+.timeline-content {
+  min-width: 0;
+}
+
+@media (max-width: 720px) {
+  .timeline {
+    padding-left: 0;
+  }
+
+  .timeline::before {
+    left: 8px;
+  }
+
+  .timeline-item {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding-left: 28px;
+  }
+
+  .timeline-year::after {
+    left: -27px;
+    right: auto;
+  }
+}
