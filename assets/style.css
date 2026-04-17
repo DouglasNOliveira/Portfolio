@@ -620,27 +620,71 @@ textarea:focus {
 
 .game-stage-header {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: 0 minmax(0, 1fr) auto;
   align-items: center;
   gap: 12px;
+  min-height: 56px;
 }
 
 .game-stage-spacer {
-  min-height: 1px;
+  display: none;
 }
 
 .game-stage-title {
   margin: 0;
-  text-align: center;
-  font-size: 1.35rem;
-  line-height: 1.2;
+  text-align: left;
+  justify-self: start;
+  font-size: 1.18rem;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.game-stage-meta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 18px;
+  flex-wrap: nowrap;
+  min-width: 0;
 }
 
 .game-stage-scoreboard {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  flex: 0 0 auto;
+}
+
+.game-lives {
+  display: flex;
+  align-items: center;
+  order: -1;
+  flex: 0 0 auto;
+  gap: 12px;
+  margin-right: 6px;
+  min-width: 52px;
+}
+
+.pixel-heart {
+  width: 28px;
+  height: 26px;
+  display: inline-block;
+  flex: 0 0 28px;
+  margin: 0;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.pixel-heart.active {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 11 9' shape-rendering='crispEdges'%3E%3Crect width='11' height='9' fill='none'/%3E%3Cg fill='%23000'%3E%3Crect x='2' y='0' width='2' height='1'/%3E%3Crect x='7' y='0' width='2' height='1'/%3E%3Crect x='1' y='1' width='1' height='1'/%3E%3Crect x='4' y='1' width='1' height='1'/%3E%3Crect x='6' y='1' width='1' height='1'/%3E%3Crect x='9' y='1' width='1' height='1'/%3E%3Crect x='0' y='2' width='1' height='2'/%3E%3Crect x='10' y='2' width='1' height='2'/%3E%3Crect x='1' y='4' width='1' height='1'/%3E%3Crect x='9' y='4' width='1' height='1'/%3E%3Crect x='2' y='5' width='1' height='1'/%3E%3Crect x='8' y='5' width='1' height='1'/%3E%3Crect x='3' y='6' width='1' height='1'/%3E%3Crect x='7' y='6' width='1' height='1'/%3E%3Crect x='4' y='7' width='1' height='1'/%3E%3Crect x='6' y='7' width='1' height='1'/%3E%3Crect x='5' y='8' width='1' height='1'/%3E%3C/g%3E%3Cg fill='%23ff1f1f'%3E%3Crect x='2' y='1' width='2' height='1'/%3E%3Crect x='7' y='1' width='2' height='1'/%3E%3Crect x='1' y='2' width='5' height='2'/%3E%3Crect x='6' y='2' width='4' height='2'/%3E%3Crect x='2' y='4' width='7' height='1'/%3E%3Crect x='3' y='5' width='5' height='1'/%3E%3Crect x='4' y='6' width='3' height='1'/%3E%3Crect x='5' y='7' width='1' height='1'/%3E%3C/g%3E%3Cg fill='%23fff'%3E%3Crect x='2' y='2' width='2' height='1'/%3E%3Crect x='2' y='3' width='1' height='1'/%3E%3Crect x='3' y='3' width='1' height='1'/%3E%3Crect x='3' y='4' width='1' height='1'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.pixel-heart.empty {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 11 9' shape-rendering='crispEdges'%3E%3Crect width='11' height='9' fill='none'/%3E%3Cg fill='%23000'%3E%3Crect x='2' y='0' width='2' height='1'/%3E%3Crect x='7' y='0' width='2' height='1'/%3E%3Crect x='1' y='1' width='1' height='1'/%3E%3Crect x='4' y='1' width='1' height='1'/%3E%3Crect x='6' y='1' width='1' height='1'/%3E%3Crect x='9' y='1' width='1' height='1'/%3E%3Crect x='0' y='2' width='1' height='2'/%3E%3Crect x='5' y='2' width='1' height='1'/%3E%3Crect x='10' y='2' width='1' height='2'/%3E%3Crect x='1' y='4' width='1' height='1'/%3E%3Crect x='9' y='4' width='1' height='1'/%3E%3Crect x='2' y='5' width='1' height='1'/%3E%3Crect x='8' y='5' width='1' height='1'/%3E%3Crect x='3' y='6' width='1' height='1'/%3E%3Crect x='7' y='6' width='1' height='1'/%3E%3Crect x='4' y='7' width='1' height='1'/%3E%3Crect x='6' y='7' width='1' height='1'/%3E%3Crect x='5' y='8' width='1' height='1'/%3E%3C/g%3E%3Cg fill='%23ffffff'%3E%3Crect x='2' y='1' width='2' height='1'/%3E%3Crect x='7' y='1' width='2' height='1'/%3E%3Crect x='1' y='2' width='4' height='2'/%3E%3Crect x='6' y='2' width='4' height='2'/%3E%3Crect x='2' y='4' width='7' height='1'/%3E%3Crect x='3' y='5' width='5' height='1'/%3E%3Crect x='4' y='6' width='3' height='1'/%3E%3Crect x='5' y='7' width='1' height='1'/%3E%3C/g%3E%3Cg fill='%23ececec'%3E%3Crect x='7' y='2' width='2' height='3'/%3E%3Crect x='6' y='4' width='2' height='2'/%3E%3Crect x='5' y='6' width='1' height='1'/%3E%3C/g%3E%3C/svg%3E");
 }
 
 .game-stage-chip {
@@ -654,6 +698,9 @@ textarea:focus {
   color: #144c73;
   font-size: 0.88rem;
   font-weight: 800;
+  min-width: 96px;
+  justify-content: center;
+  white-space: nowrap;
 }
 
 .snake-headline {
@@ -856,6 +903,7 @@ textarea:focus {
 
   .game-stage-header {
     grid-template-columns: 1fr;
+    min-height: 0;
   }
 
   .game-stage-spacer {
@@ -863,6 +911,10 @@ textarea:focus {
   }
 
   .game-stage-scoreboard {
+    justify-content: center;
+  }
+
+  .game-stage-meta {
     justify-content: center;
   }
 }

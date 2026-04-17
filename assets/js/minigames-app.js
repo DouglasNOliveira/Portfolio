@@ -3,6 +3,7 @@
     const context = board.getContext("2d");
     const boardShell = document.querySelector(".snake-board-shell");
     const gameTitleElement = document.getElementById("game-title");
+    const livesElement = document.getElementById("game-lives");
     const scoreElement = document.getElementById("score");
     const highScoreElement = document.getElementById("high-score");
     const statusElement = document.getElementById("game-status");
@@ -22,7 +23,7 @@
     function getInitialGameKey() {
         const params = new URLSearchParams(window.location.search);
         const requestedGame = params.get("game");
-        return requestedGame === "pong" ? "pong" : "snake";
+        return ["snake", "pong", "arkanoid"].includes(requestedGame) ? requestedGame : "snake";
     }
 
     function setStatus(message) {
@@ -35,6 +36,26 @@
 
         if (meta && meta.title) {
             gameTitleElement.textContent = meta.title;
+        }
+
+        renderLives(meta && Number.isInteger(meta.lives) ? meta.lives : null);
+    }
+
+    function renderLives(lives) {
+        if (!Number.isInteger(lives)) {
+            livesElement.hidden = true;
+            livesElement.innerHTML = "";
+            return;
+        }
+
+        livesElement.hidden = false;
+        livesElement.innerHTML = "";
+
+        for (let index = 0; index < 2; index += 1) {
+            const heart = document.createElement("span");
+            heart.className = `pixel-heart${index < lives ? " active" : " empty"}`;
+            heart.setAttribute("aria-hidden", "true");
+            livesElement.appendChild(heart);
         }
     }
 
@@ -122,7 +143,8 @@
 
     const games = {
         snake: new window.MiniGamesSnake(env),
-        pong: new window.MiniGamesPong(env)
+        pong: new window.MiniGamesPong(env),
+        arkanoid: new window.MiniGamesArkanoid(env)
     };
 
     function syncBoardSize() {
@@ -193,7 +215,7 @@
         });
 
         button.addEventListener("pointerdown", (event) => {
-            if (currentGameKey !== "pong") {
+            if (!["pong", "arkanoid"].includes(currentGameKey)) {
                 return;
             }
 
@@ -203,7 +225,7 @@
 
         ["pointerup", "pointercancel", "pointerleave"].forEach((eventName) => {
             button.addEventListener(eventName, () => {
-                if (currentGameKey !== "pong") {
+                if (!["pong", "arkanoid"].includes(currentGameKey)) {
                     return;
                 }
 

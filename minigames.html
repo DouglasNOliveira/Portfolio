@@ -13,7 +13,7 @@
     <header>
         <div class="hero">
             <h1>Mini Games</h1>
-            <h2>Escolha entre Snake e Pong para explorar uma pausa interativa no portfolio</h2>
+            <h2>Escolha entre Snake, Pong e Arkanoid para explorar uma pausa interativa no portfolio</h2>
         </div>
     </header>
 
@@ -28,6 +28,7 @@
                 <div class="dropdown-menu">
                     <a class="dropdown-link" href="minigames.html">Snake</a>
                     <a class="dropdown-link" href="minigames.html?game=pong">Pong</a>
+                    <a class="dropdown-link" href="minigames.html?game=arkanoid">Arkanoid</a>
                 </div>
             </div>
         </nav>
@@ -37,9 +38,12 @@
                 <div class="game-stage-header">
                     <div class="game-stage-spacer" aria-hidden="true"></div>
                     <h3 id="game-title" class="game-stage-title">Snake</h3>
-                    <div class="game-stage-scoreboard" aria-label="Pontuacao do jogo">
+                    <div class="game-stage-meta">
+                        <div id="game-lives" class="game-lives" aria-label="Vidas do jogo" hidden></div>
+                        <div class="game-stage-scoreboard" aria-label="Pontuacao do jogo">
                         <span class="game-stage-chip">PTS: <strong id="score">0</strong></span>
                         <span class="game-stage-chip">MAX: <strong id="high-score">0</strong></span>
+                        </div>
                     </div>
                 </div>
                 <div class="snake-board-shell">
@@ -79,6 +83,7 @@
 
     <script src="assets/js/games/snake.js"></script>
     <script src="assets/js/games/pong.js"></script>
+    <script src="assets/js/games/arkanoid.js"></script>
     <script src="assets/js/minigames-app.js"></script>
 </body>
 </html>
