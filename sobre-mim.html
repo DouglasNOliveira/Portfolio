@@ -7,28 +7,40 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/style.css">
+    <script src="assets/js/site.js" defer></script>
 </head>
 <body>
     <header>
         <div class="hero">
-            <h1>Douglas Nascimento de Oliveira</h1>
-            <h2>Física, ciência de dados, educação e desenvolvimento de soluções digitais</h2>
+            <div class="hero-copy">
+                <p class="eyebrow">Portfólio Profissional</p>
+                <h1>Douglas Nascimento de Oliveira</h1>
+                <h2>Físico e Cientista de Dados.</h2>
+                <p class="hero-typing-line">Atuo como <span class="typed-text" data-typed='["analista de dados","desenvolvedor web","criador de soluções digitais","profissional orientado por impacto"]'></span><span class="typed-cursor">|</span></p>
+            </div>
         </div>
     </header>
 
     <main class="container">
-        <nav class="tabs" aria-label="Navegação principal">
-            <a class="tab-link active" href="sobre-mim.html">Sobre Mim</a>
-            <a class="tab-link" href="formacao-academica.html">Formação Acadêmica</a>
-            <a class="tab-link" href="portfolio.html">Portfólio</a>
-            <a class="tab-link" href="contato.html">Contato</a>
-            <div class="tab-dropdown">
-                <a class="tab-link" href="minigames.html">Mini Games</a>
-                <div class="dropdown-menu">
-                    <a class="dropdown-link" href="minigames.html">Snake</a>
-                    <a class="dropdown-link" href="minigames.html?game=pong">Pong</a>
-                    <a class="dropdown-link" href="minigames.html?game=arkanoid">Arkanoid</a>
+        <nav class="site-nav" aria-label="Navegação principal">
+            <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Abrir navegação" data-nav-toggle>
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="tabs" data-nav-menu>
+                <a class="tab-link active" href="sobre-mim.html">Sobre Mim</a>
+                <a class="tab-link" href="portfolio.html">Portfólio</a>
+                <a class="tab-link" href="contato.html">Contato</a>
+                <div class="tab-dropdown">
+                    <a class="tab-link" href="minigames.html">Mini Games</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-link" href="minigames.html">Snake</a>
+                        <a class="dropdown-link" href="minigames.html?game=pong">Pong</a>
+                        <a class="dropdown-link" href="minigames.html?game=arkanoid">Arkanoid</a>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -37,15 +49,28 @@
             <div class="profile-summary">
                 <img class="profile-photo" src="minha-foto.jpg" alt="Foto de Douglas Nascimento de Oliveira">
                 <div>
-                    <div class="badge success">Perfil Ativo</div>
                     <h2>Quem sou eu</h2>
-                    <p class="lead">Olá! Meu nome é Douglas. Sou formado em Física, atualmente curso Ciência de Dados e sigo ampliando minha atuação em desenvolvimento de software, com atenção especial a soluções educacionais e aplicações móveis.</p>
+                    <p class="lead">Olá! Meu nome é Douglas. Sou formado em Física e Ciência de Dados, atualmente curso uma pós-graduação na área de dados e sigo ampliando meus conhecimentos.</p>
                     <div class="notice info-strip">
                         <div class="info-icon" aria-hidden="true">i</div>
                         <div>
                             <strong>Direção profissional</strong>
-                            <div>Busco unir base analítica, experiência técnica e visão prática para construir produtos úteis, claros e com aplicação real.</div>
+                            <div>Estou em processo de transição da carreira de docente para analista.</div>
                         </div>
+                    </div>
+                    <div class="social-links" aria-label="Redes sociais">
+                        <a class="social-link" href="https://www.linkedin.com/in/douglas-nascimento-de-oliveira" target="_blank" rel="noreferrer" aria-label="LinkedIn">
+                            <i class="bx bxl-linkedin-square"></i>
+                        </a>
+                        <a class="social-link" href="https://www.instagram.com/doug_nsc" target="_blank" rel="noreferrer" aria-label="Instagram">
+                            <i class="bx bxl-instagram-alt"></i>
+                        </a>
+                        <a class="social-link" href="https://github.com/DouglasNOliveira" target="_blank" rel="noreferrer" aria-label="GitHub">
+                            <i class="bx bxl-github"></i>
+                        </a>
+                        <a class="social-link" href="https://www.setlist.fm/user/doug_nsc" target="_blank" rel="noreferrer" aria-label="Setlist.fm">
+                            <i class="bx bx-music"></i>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -54,19 +79,46 @@
         <section class="grid cols-2">
             <article class="topic-card">
                 <h3>Minha experiência</h3>
-                <p class="lead">Tenho experiência em projetos com Arduino e robótica, com foco em integrar hardware e software em contextos educacionais e experimentais.</p>
-                <p class="lead">Atualmente desenvolvo iniciativas para análise de objetos de licitação pública, utilizando dados do INMETRO. Parte desse trabalho se traduziu no Portal de Calculadoras de Custo-Benefício e Vida Útil, hoje disponível no site do TCE-PR.</p>
+                <p class="lead">Atualmente desenvolvo relatórios de análise de dados para apoiar decisões estratégicas. Já trabalhei com dados como índices e indicadores de desempenho, dados financeiros e informações de mercado, dados patrimoniais e pesquisa de opinião.</p>
+                <p class="lead">Na educação, tenho experiência em projetos com Arduino e Robótica, com foco em integrar hardware e software em contextos educacionais e experimentais.</p>
             </article>
 
             <article class="topic-card">
-                <h3>Interesses principais</h3>
+                <h3>Ferramentas e Tecnologias</h3>
                 <ul class="bullet-list">
-                    <li>Desenvolvimento WEB</li>
-                    <li>Análise de Dados para tomada de decisão</li>
-                    <li>Robótica educacional</li>
-                    <li>Desenvolvimento de software e aplicações móveis</li>
-                    <li>Projetos que combinam análise, interface e impacto prático</li>
+                    <li>Desenvolvimento WEB: HTML, CSS, JavaScript, GitHub</li>
+                    <li>Análise de Dados: Excel, Python, SQL, Pandas, NumPy</li>
+                    <li>Visualização de Dados: Excel, Power BI, Power Point</li>
+                    <li>Sistemas embarcados: C++, Arduino, Raspberry Pi</li>
+                    <li>Outras: Jupyter Notebook, Google Colab, Trello, Notion</li>
                 </ul>
+            </article>
+        </section>
+<br>
+        <section class="card highlight">
+            <h2>Formação Acadêmica</h2>
+        </section>
+
+        <section class="grid cols-2">
+            <article class="topic-card">
+                <div class="badge success">Concluído</div>
+                <h3>Licenciatura em Física</h3>
+                <p class="lead">Universidade Tecnológica Federal do Paraná</p>
+                <p class="muted">Formação que consolidou raciocínio analítico, modelagem de problemas, instrumentação e comunicação técnica.</p>
+            </article>
+
+            <article class="topic-card">
+                <div class="badge success">Concluído</div>
+                <h3>Tecnologia em Ciência de Dados</h3>
+                <p class="lead">UNINTER</p>
+                <p class="muted">Análise de dados, organização de informação, leitura quantitativa e aplicação prática de métodos para tomada de decisão.</p>
+            </article>
+
+            <article class="topic-card">
+                <div class="badge muted">Andamento</div>
+                <h3>Pós Latu Sensu em Data Science</h3>
+                <p class="lead">Descomplica UniAmérica</p>
+                <p class="muted">Formação contínua em ciência de dados, com foco em aprendizado de máquina e análise avançada de dados.</p>
             </article>
         </section>
     </main>

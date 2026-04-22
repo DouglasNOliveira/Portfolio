@@ -7,103 +7,74 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/style.css">
+    <script src="assets/js/site.js" defer></script>
 </head>
 <body>
     <header>
         <div class="hero">
-            <h1>Contato Profissional e Pessoal</h1>
-            <h2>Contato direto para propostas, parcerias e trocas técnicas</h2>
+            <div class="hero-copy">
+                <p class="eyebrow">Contato</p>
+                <h1>Contato Profissional e Pessoal</h1>
+                <h2>Canal direto para propostas, parcerias, oportunidades e conversas técnicas.</h2>
+            </div>
         </div>
     </header>
 
     <main class="container">
-        <nav class="tabs" aria-label="Navegação principal">
-            <a class="tab-link" href="sobre-mim.html">Sobre Mim</a>
-            <a class="tab-link" href="formacao-academica.html">Formação Acadêmica</a>
-            <a class="tab-link" href="portfolio.html">Portfólio</a>
-            <a class="tab-link active" href="contato.html">Contato</a>
-            <div class="tab-dropdown">
-                <a class="tab-link" href="minigames.html">Mini Games</a>
-                <div class="dropdown-menu">
-                    <a class="dropdown-link" href="minigames.html">Snake</a>
-                    <a class="dropdown-link" href="minigames.html?game=pong">Pong</a>
-                    <a class="dropdown-link" href="minigames.html?game=arkanoid">Arkanoid</a>
+        <nav class="site-nav" aria-label="Navegação principal">
+            <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Abrir navegação" data-nav-toggle>
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="tabs" data-nav-menu>
+                <a class="tab-link" href="sobre-mim.html">Sobre Mim</a>
+                <a class="tab-link" href="portfolio.html">Portfólio</a>
+                <a class="tab-link active" href="contato.html">Contato</a>
+                <div class="tab-dropdown">
+                    <a class="tab-link" href="minigames.html">Mini Games</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-link" href="minigames.html">Snake</a>
+                        <a class="dropdown-link" href="minigames.html?game=pong">Pong</a>
+                        <a class="dropdown-link" href="minigames.html?game=arkanoid">Arkanoid</a>
+                    </div>
                 </div>
             </div>
         </nav>
 
-        <section class="grid cols-2">
-            <article class="card highlight">
-                <h2>Entre em contato</h2>
-                <p class="lead">Se você deseja conversar sobre projetos, colaboração ou oportunidades, envie uma mensagem pelo formulário ou escreva para <a href="mailto:douglas.dgs94@hotmail.com">douglas.dgs94@hotmail.com</a>.</p>
+        <section class="card highlight">
+            <h2>Entre em contato</h2>
+            <p class="lead">Se você deseja conversar sobre projetos, colaboração ou oportunidades, envie uma mensagem pelo formulário ou escreva para <a href="mailto:douglas.dgs94@hotmail.com">douglas.dgs94@hotmail.com</a>.</p>
 
-                <form class="contact-form" id="contact-form">
-                    <div>
-                        <label for="name">Nome</label>
-                        <input type="text" id="name" name="name" required>
-                    </div>
-
-                    <div class="form-row">
-                        <div>
-                            <label for="email">E-mail</label>
-                            <input type="email" id="email" name="email" required>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label for="message">Mensagem</label>
-                        <textarea id="message" name="message" rows="6" required></textarea>
-                    </div>                    <div id="form-status" class="form-status" aria-live="polite"></div>
-
-                    <button class="btn" id="submit-button" type="submit">Enviar mensagem</button>
-                </form>
-            </article>
-
-            <article class="card">
-                <h2>Redes sociais</h2>
-                <p class="lead">Canais para acompanhar meu trabalho e abrir uma conversa em outras plataformas.</p>
-                <div class="grid cols-3 cards-equal">
-                    <article class="topic-card">
-                        <h3>LinkedIn</h3>
-                        <p class="muted">Perfil profissional com trajetória, experiências e conexões.</p>
-                        <div class="actions">
-                            <a class="btn" href="https://www.linkedin.com/in/douglas-nascimento-de-oliveira" target="_blank" rel="noreferrer">Abrir LinkedIn</a>
-                        </div>
-                    </article>
-
-                    <article class="topic-card">
-                        <h3>Instagram</h3>
-                        <p class="muted">Perfil no Instagram para um contato mais pessoal.</p>
-                        <div class="actions">
-                            <a class="btn" href="https://www.instagram.com/doug_nsc" target="_blank" rel="noreferrer">Abrir Instagram</a>
-                        </div>
-                    </article>
-
-                    <article class="topic-card">
-                        <h3>GitHub</h3>
-                        <p class="muted">Perfil no GitHub para visualizar meus projetos e contribuições.</p>
-                        <div class="actions">
-                            <a class="btn" href="https://github.com/DouglasNOliveira" target="_blank" rel="noreferrer">Abrir GitHub</a>
-                        </div>
-                    </article>
-
-                    <article class="topic-card">
-                        <h3>Setlist.fm</h3>
-                        <p class="muted">Registro dos shows que compareci ao longo dos anos.</p>
-                        <div class="actions">
-                            <a class="btn" href="https://www.setlist.fm/user/doug_nsc" target="_blank" rel="noreferrer">Abrir setlist.fm</a>
-                        </div>
-                    </article>
+            <form class="contact-form" id="contact-form">
+                <div>
+                    <label for="name">Nome</label>
+                    <input type="text" id="name" name="name" required>
                 </div>
-            </article>
+
+                <div class="form-row">
+                    <div>
+                        <label for="email">E-mail</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="message">Mensagem</label>
+                    <textarea id="message" name="message" rows="6" required></textarea>
+                </div>
+
+                <div id="form-status" class="form-status" aria-live="polite"></div>
+                <button class="btn" id="submit-button" type="submit">Enviar mensagem</button>
+            </form>
         </section>
     </main>
 
     <footer class="footer">
         2026 - Portfólio de Douglas Nascimento de Oliveira
     </footer>
-
     <script>
         const FORMSPREE_ENDPOINT = "https://formspree.io/f/maqpvley";
 

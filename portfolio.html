@@ -7,28 +7,39 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/style.css">
+    <script src="assets/js/site.js" defer></script>
 </head>
 <body>
     <header>
         <div class="hero">
-            <h1>Projetos Acadêmicos e Profissionais</h1>
-            <h2>Trabalhos que conectam pesquisa, educação, prototipagem e tecnologia</h2>
+            <div class="hero-copy">
+                <p class="eyebrow">Projetos</p>
+                <h1>Projetos Acadêmicos e Profissionais</h1>
+                <h2>Trabalhos que conectam pesquisa, prototipagem, dados e desenvolvimento com utilidade prática.</h2>
+            </div>
         </div>
     </header>
 
     <main class="container">
-        <nav class="tabs" aria-label="Navegação principal">
-            <a class="tab-link" href="sobre-mim.html">Sobre Mim</a>
-            <a class="tab-link" href="formacao-academica.html">Formação Acadêmica</a>
-            <a class="tab-link active" href="portfolio.html">Portfólio</a>
-            <a class="tab-link" href="contato.html">Contato</a>
-            <div class="tab-dropdown">
-                <a class="tab-link" href="minigames.html">Mini Games</a>
-                <div class="dropdown-menu">
-                    <a class="dropdown-link" href="minigames.html">Snake</a>
-                    <a class="dropdown-link" href="minigames.html?game=pong">Pong</a>
-                    <a class="dropdown-link" href="minigames.html?game=arkanoid">Arkanoid</a>
+        <nav class="site-nav" aria-label="Navegação principal">
+            <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Abrir navegação" data-nav-toggle>
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="tabs" data-nav-menu>
+                <a class="tab-link" href="sobre-mim.html">Sobre Mim</a>
+                <a class="tab-link active" href="portfolio.html">Portfólio</a>
+                <a class="tab-link" href="contato.html">Contato</a>
+                <div class="tab-dropdown">
+                    <a class="tab-link" href="minigames.html">Mini Games</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-link" href="minigames.html">Snake</a>
+                        <a class="dropdown-link" href="minigames.html?game=pong">Pong</a>
+                        <a class="dropdown-link" href="minigames.html?game=arkanoid">Arkanoid</a>
+                    </div>
                 </div>
             </div>
         </nav>

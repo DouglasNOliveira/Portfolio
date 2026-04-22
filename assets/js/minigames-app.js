@@ -52,8 +52,8 @@
         livesElement.innerHTML = "";
 
         for (let index = 0; index < 2; index += 1) {
-            const heart = document.createElement("span");
-            heart.className = `pixel-heart${index < lives ? " active" : " empty"}`;
+            const heart = document.createElement("i");
+            heart.className = `game-life-icon bx ${index < lives ? "bxs-heart" : "bx-heart empty"}`;
             heart.setAttribute("aria-hidden", "true");
             livesElement.appendChild(heart);
         }

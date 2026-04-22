@@ -7,28 +7,39 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/style.css">
+    <script src="assets/js/site.js" defer></script>
 </head>
 <body>
     <header>
         <div class="hero">
-            <h1>Mini Games</h1>
-            <h2>Escolha entre Snake, Pong e Arkanoid para explorar uma pausa interativa no portfolio</h2>
+            <div class="hero-copy">
+                <p class="eyebrow">Arcade</p>
+                <h1>Mini Games</h1>
+                <h2>Uma seção extra do portfólio para mostrar atenção a interface, lógica e interação em tempo real.</h2>
+            </div>
         </div>
     </header>
 
     <main class="container">
-        <nav class="tabs" aria-label="Navegacao principal">
-            <a class="tab-link" href="sobre-mim.html">Sobre Mim</a>
-            <a class="tab-link" href="formacao-academica.html">Formacao Academica</a>
-            <a class="tab-link" href="portfolio.html">Portfolio</a>
-            <a class="tab-link" href="contato.html">Contato</a>
-            <div class="tab-dropdown">
-                <a class="tab-link active" href="minigames.html">Mini Games</a>
-                <div class="dropdown-menu">
-                    <a class="dropdown-link" href="minigames.html">Snake</a>
-                    <a class="dropdown-link" href="minigames.html?game=pong">Pong</a>
-                    <a class="dropdown-link" href="minigames.html?game=arkanoid">Arkanoid</a>
+        <nav class="site-nav" aria-label="Navegacao principal">
+            <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Abrir navegacao" data-nav-toggle>
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="tabs" data-nav-menu>
+                <a class="tab-link" href="sobre-mim.html">Sobre Mim</a>
+                <a class="tab-link" href="portfolio.html">Portfolio</a>
+                <a class="tab-link" href="contato.html">Contato</a>
+                <div class="tab-dropdown">
+                    <a class="tab-link active" href="minigames.html">Mini Games</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-link" href="minigames.html">Snake</a>
+                        <a class="dropdown-link" href="minigames.html?game=pong">Pong</a>
+                        <a class="dropdown-link" href="minigames.html?game=arkanoid">Arkanoid</a>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -55,16 +66,16 @@
                 <div class="control-section">
                     <div id="game-pad" class="game-pad" aria-label="Controle direcional">
                         <button class="btn control-btn up" data-pad="up" type="button" aria-label="Mover para cima">
-                            <span aria-hidden="true">&uarr;</span>
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5 L12 19 M12 5 L6.5 10.5 M12 5 L17.5 10.5"></path></svg>
                         </button>
                         <button class="btn control-btn left" data-pad="left" type="button" aria-label="Mover para a esquerda">
-                            <span aria-hidden="true">&larr;</span>
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12 L19 12 M5 12 L10.5 6.5 M5 12 L10.5 17.5"></path></svg>
                         </button>
                         <button class="btn control-btn down" data-pad="down" type="button" aria-label="Mover para baixo">
-                            <span aria-hidden="true">&darr;</span>
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19 L12 5 M12 19 L6.5 13.5 M12 19 L17.5 13.5"></path></svg>
                         </button>
                         <button class="btn control-btn right" data-pad="right" type="button" aria-label="Mover para a direita">
-                            <span aria-hidden="true">&rarr;</span>
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12 L5 12 M19 12 L13.5 6.5 M19 12 L13.5 17.5"></path></svg>
                         </button>
                     </div>
                 </div>
