@@ -27,6 +27,7 @@
             this.secretBuffer = "";
             this.hasWon = false;
             this.moveDirection = 0;
+            this.powerUps = [];
             this.paddleX = (this.width - this.paddleWidth) / 2;
             this.paddleY = this.height - 32;
             this.ballSpeedCap = 5.2;
@@ -34,12 +35,27 @@
             this.resetBall();
         }
 
+        createBall(x, y, vx, vy) {
+            return {
+                x,
+                y,
+                vx,
+                vy,
+                size: this.ballSize
+            };
+        }
+
         resetBall() {
             this.paddleX = (this.width - this.paddleWidth) / 2;
-            this.ballX = this.width / 2 - this.ballSize / 2;
-            this.ballY = this.paddleY - this.ballSize - 10;
-            this.ballVX = Math.random() > 0.5 ? 2.8 : -2.8;
-            this.ballVY = -2.8;
+            this.balls = [
+                this.createBall(
+                    this.width / 2 - this.ballSize / 2,
+                    this.paddleY - this.ballSize - 10,
+                    Math.random() > 0.5 ? 2.8 : -2.8,
+                    -2.8
+                )
+            ];
+            this.powerUps = [];
         }
 
         createBricks() {
@@ -48,10 +64,11 @@
             const brickWidth = 42;
             const brickHeight = 14;
             const gap = 6;
-            const startX = 25;
             const startY = 28;
             const colors = ["#ff7b72", "#ffad5a", "#ffd166", "#73d29a", "#73c9ff"];
             const bricks = [];
+            const totalWidth = columns * brickWidth + (columns - 1) * gap;
+            const startX = (this.width - totalWidth) / 2;
 
             for (let row = 0; row < rows; row += 1) {
                 for (let column = 0; column < columns; column += 1) {
@@ -108,6 +125,94 @@
         syncHud() {
             this.meta.lives = this.lives;
             this.env.setScoreboard(this.score, this.highScore, this.meta);
+        }
+
+        maybeSpawnPowerUp(brick) {
+            const roll = Math.random();
+            let type = null;
+
+            if (roll < 0.1) {
+                type = "multiball";
+            } else if (roll < 0.125) {
+                type = "extra-life";
+            }
+
+            if (!type) {
+                return;
+            }
+
+            this.powerUps.push({
+                type,
+                x: brick.x + brick.width / 2 - 16,
+                y: brick.y + brick.height / 2 - 16,
+                width: 32,
+                height: 18,
+                vy: 2.15
+            });
+        }
+
+        spawnMultiball(sourceBall) {
+            const baseSpeed = Math.max(2.8, Math.min(this.ballSpeedCap, Math.hypot(sourceBall.vx, sourceBall.vy)));
+            const directions = [-0.9, 0.9];
+
+            directions.forEach((direction) => {
+                if (this.balls.length >= 3) {
+                    return;
+                }
+
+                this.balls.push(
+                    this.createBall(
+                        sourceBall.x,
+                        sourceBall.y,
+                        baseSpeed * direction,
+                        -Math.abs(baseSpeed * 0.92)
+                    )
+                );
+            });
+
+            this.env.setStatus("Multiball ativado.");
+        }
+
+        updatePowerUps(frameFactor) {
+            const nextPowerUps = [];
+
+            this.powerUps.forEach((powerUp) => {
+                powerUp.y += powerUp.vy * frameFactor;
+
+                const touchesPaddle =
+                    powerUp.y + powerUp.height >= this.paddleY &&
+                    powerUp.y <= this.paddleY + this.paddleHeight &&
+                    powerUp.x + powerUp.width >= this.paddleX &&
+                    powerUp.x <= this.paddleX + this.paddleWidth;
+
+                if (touchesPaddle) {
+                    if (powerUp.type === "multiball") {
+                        this.spawnMultiball(this.balls[0] || this.createBall(this.paddleX, this.paddleY, 2.8, -2.8));
+                    }
+
+                    if (powerUp.type === "extra-life") {
+                        this.lives += 1;
+                        this.syncHud();
+                        this.env.setStatus(`Vida extra: ${this.lives} vidas.`);
+                    }
+
+                    this.env.emitParticles(
+                        powerUp.x + powerUp.width / 2,
+                        powerUp.y + powerUp.height / 2,
+                        powerUp.type === "extra-life" ? "#ff6b8a" : "#73c9ff",
+                        12,
+                        6,
+                        6
+                    );
+                    return;
+                }
+
+                if (powerUp.y <= this.height) {
+                    nextPowerUps.push(powerUp);
+                }
+            });
+
+            this.powerUps = nextPowerUps;
         }
 
         trackSecretCode(key) {
@@ -206,15 +311,15 @@
             this.paddleX = Math.max(0, Math.min(this.width - this.paddleWidth, this.paddleX));
         }
 
-        collideBallWithBrick(previousX, previousY) {
-            const ballLeft = this.ballX;
-            const ballRight = this.ballX + this.ballSize;
-            const ballTop = this.ballY;
-            const ballBottom = this.ballY + this.ballSize;
+        collideBallWithBrick(ball, previousX, previousY) {
+            const ballLeft = ball.x;
+            const ballRight = ball.x + ball.size;
+            const ballTop = ball.y;
+            const ballBottom = ball.y + ball.size;
             const previousLeft = previousX;
-            const previousRight = previousX + this.ballSize;
+            const previousRight = previousX + ball.size;
             const previousTop = previousY;
-            const previousBottom = previousY + this.ballSize;
+            const previousBottom = previousY + ball.size;
 
             for (const brick of this.bricks) {
                 if (!brick.alive) {
@@ -244,6 +349,7 @@
                 if (brick.strength <= 0) {
                     brick.alive = false;
                     this.updateScore(this.score + 10);
+                    this.maybeSpawnPowerUp(brick);
                     this.env.setStatus("Bloco destruido.");
                 } else {
                     this.env.setStatus(`Bloco resistente: ${brick.strength}.`);
@@ -255,16 +361,16 @@
                 const hitFromBottom = previousTop >= brick.y + brick.height;
 
                 if (hitFromLeft || hitFromRight) {
-                    this.ballVX *= -1;
+                    ball.vx *= -1;
                 } else if (hitFromTop || hitFromBottom) {
-                    this.ballVY *= -1;
+                    ball.vy *= -1;
                 } else {
-                    this.ballVY *= -1;
+                    ball.vy *= -1;
                 }
 
                 const speedBoost = 0.03;
-                this.ballVX = Math.max(-this.ballSpeedCap, Math.min(this.ballSpeedCap, this.ballVX * (1 + speedBoost)));
-                this.ballVY = Math.max(-this.ballSpeedCap, Math.min(this.ballSpeedCap, this.ballVY * (1 + speedBoost)));
+                ball.vx = Math.max(-this.ballSpeedCap, Math.min(this.ballSpeedCap, ball.vx * (1 + speedBoost)));
+                ball.vy = Math.max(-this.ballSpeedCap, Math.min(this.ballSpeedCap, ball.vy * (1 + speedBoost)));
                 return true;
             }
 
@@ -273,46 +379,56 @@
 
         update(deltaMs, frameFactor) {
             this.updatePaddle(frameFactor);
+            const nextBalls = [];
 
-            const previousX = this.ballX;
-            const previousY = this.ballY;
+            this.balls.forEach((ball) => {
+                const previousX = ball.x;
+                const previousY = ball.y;
 
-            this.ballX += this.ballVX * frameFactor;
-            this.ballY += this.ballVY * frameFactor;
+                ball.x += ball.vx * frameFactor;
+                ball.y += ball.vy * frameFactor;
 
-            if (this.ballX <= 0) {
-                this.ballX = 0;
-                this.ballVX *= -1;
-            }
+                if (ball.x <= 0) {
+                    ball.x = 0;
+                    ball.vx *= -1;
+                }
 
-            if (this.ballX + this.ballSize >= this.width) {
-                this.ballX = this.width - this.ballSize;
-                this.ballVX *= -1;
-            }
+                if (ball.x + ball.size >= this.width) {
+                    ball.x = this.width - ball.size;
+                    ball.vx *= -1;
+                }
 
-            if (this.ballY <= 0) {
-                this.ballY = 0;
-                this.ballVY *= -1;
-            }
+                if (ball.y <= 0) {
+                    ball.y = 0;
+                    ball.vy *= -1;
+                }
 
-            const hitsPaddle =
-                this.ballY + this.ballSize >= this.paddleY &&
-                this.ballY <= this.paddleY + this.paddleHeight &&
-                this.ballX + this.ballSize >= this.paddleX &&
-                this.ballX <= this.paddleX + this.paddleWidth &&
-                this.ballVY > 0;
+                const hitsPaddle =
+                    ball.y + ball.size >= this.paddleY &&
+                    ball.y <= this.paddleY + this.paddleHeight &&
+                    ball.x + ball.size >= this.paddleX &&
+                    ball.x <= this.paddleX + this.paddleWidth &&
+                    ball.vy > 0;
 
-            if (hitsPaddle) {
-                const paddleCenter = this.paddleX + this.paddleWidth / 2;
-                const ballCenter = this.ballX + this.ballSize / 2;
-                const offset = (ballCenter - paddleCenter) / (this.paddleWidth / 2);
-                this.ballY = this.paddleY - this.ballSize;
-                this.ballVY = -Math.abs(this.ballVY);
-                this.ballVX = Math.max(-this.ballSpeedCap, Math.min(this.ballSpeedCap, offset * 4.1));
-                this.env.emitParticles(ballCenter, this.paddleY, "#73c9ff", 8, 6, 5);
-            }
+                if (hitsPaddle) {
+                    const paddleCenter = this.paddleX + this.paddleWidth / 2;
+                    const ballCenter = ball.x + ball.size / 2;
+                    const offset = (ballCenter - paddleCenter) / (this.paddleWidth / 2);
+                    ball.y = this.paddleY - ball.size;
+                    ball.vy = -Math.abs(ball.vy);
+                    ball.vx = Math.max(-this.ballSpeedCap, Math.min(this.ballSpeedCap, offset * 4.1));
+                    this.env.emitParticles(ballCenter, this.paddleY, "#73c9ff", 8, 6, 5);
+                }
 
-            this.collideBallWithBrick(previousX, previousY);
+                this.collideBallWithBrick(ball, previousX, previousY);
+
+                if (ball.y <= this.height) {
+                    nextBalls.push(ball);
+                }
+            });
+
+            this.balls = nextBalls;
+            this.updatePowerUps(frameFactor);
 
             if (this.bricks.every((brick) => !brick.alive)) {
                 this.hasWon = true;
@@ -323,7 +439,7 @@
                 return;
             }
 
-            if (this.ballY > this.height) {
+            if (this.balls.length === 0) {
                 this.moveDirection = 0;
                 this.lives -= 1;
 
@@ -395,16 +511,35 @@
             context.roundRect(this.paddleX, this.paddleY, this.paddleWidth, this.paddleHeight, 10);
             context.fill();
 
-            context.fillStyle = "#ff6b6b";
-            context.beginPath();
-            context.arc(
-                this.ballX + this.ballSize / 2,
-                this.ballY + this.ballSize / 2,
-                this.ballSize / 2,
-                0,
-                Math.PI * 2
-            );
-            context.fill();
+            this.balls.forEach((ball) => {
+                context.fillStyle = "#ff6b6b";
+                context.beginPath();
+                context.arc(
+                    ball.x + ball.size / 2,
+                    ball.y + ball.size / 2,
+                    ball.size / 2,
+                    0,
+                    Math.PI * 2
+                );
+                context.fill();
+            });
+
+            this.powerUps.forEach((powerUp) => {
+                context.fillStyle = powerUp.type === "extra-life" ? "#ff6b8a" : "#73c9ff";
+                context.beginPath();
+                context.roundRect(powerUp.x, powerUp.y, powerUp.width, powerUp.height, 8);
+                context.fill();
+
+                context.fillStyle = "#0f1f30";
+                context.textAlign = "center";
+                context.textBaseline = "middle";
+                context.font = "800 11px Manrope, sans-serif";
+                context.fillText(
+                    powerUp.type === "extra-life" ? "+1" : "3x",
+                    powerUp.x + powerUp.width / 2,
+                    powerUp.y + powerUp.height / 2 + 0.5
+                );
+            });
 
             if (this.hasWon) {
                 context.fillStyle = "rgba(7, 17, 28, 0.72)";

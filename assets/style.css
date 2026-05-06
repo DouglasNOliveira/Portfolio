@@ -684,6 +684,57 @@ textarea:focus {
   font-weight: 700;
 }
 
+.investments-page {
+  width: min(1560px, calc(100vw - 32px));
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.investments-layout {
+  width: min(1480px, 100%);
+  margin: 0 auto;
+  display: grid;
+  gap: 22px;
+  grid-template-columns: minmax(360px, 410px) minmax(0, 1fr);
+  align-items: stretch;
+}
+
+.investments-shell {
+  display: grid;
+  height: auto;
+}
+
+.investments-info {
+  position: sticky;
+  top: 20px;
+  height: 100%;
+}
+
+.investments-copy {
+  max-width: 760px;
+}
+
+.report-embed {
+  width: 100%;
+  padding: 8px;
+  border-radius: 24px;
+  border: 1px solid rgba(216, 228, 241, 0.92);
+  background: rgba(255, 255, 255, 0.84);
+  box-shadow: var(--shadow-soft);
+}
+
+.report-frame {
+  width: 100%;
+  display: block;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  min-height: 0;
+  border: 0;
+  border-radius: 18px;
+  background: #f8fbfe;
+}
+
 .snake-layout {
   margin-top: 42px;
   align-items: start;
@@ -923,6 +974,25 @@ textarea:focus {
 }
 
 @media (max-width: 900px) {
+  .investments-layout {
+    width: 100%;
+    grid-template-columns: 1fr;
+  }
+
+  .investments-info {
+    position: static;
+    height: auto;
+  }
+
+  .investments-shell {
+    height: auto;
+  }
+
+  .report-embed {
+    height: auto;
+    min-height: 0;
+  }
+
   .snake-layout {
     grid-template-columns: 1fr;
   }
@@ -940,6 +1010,16 @@ textarea:focus {
   .game-stage-scoreboard {
     justify-content: center;
   }
+
+  .report-embed {
+    padding: 14px;
+  }
+
+  .report-frame {
+    aspect-ratio: 16 / 9;
+    height: auto;
+    min-height: 0;
+  }
 }
 
 @media (max-width: 760px) {
@@ -949,8 +1029,26 @@ textarea:focus {
   }
 
   .container {
+      width: min(100%, calc(100vw - 20px));
+      margin-top: -58px;
+    }
+
+  .investments-page {
     width: min(100%, calc(100vw - 20px));
-    margin-top: -58px;
+    left: 0;
+    transform: none;
+  }
+
+  .report-embed {
+    padding: 8px;
+    border-radius: 18px;
+  }
+
+  .report-frame {
+    aspect-ratio: 16 / 9;
+    height: auto;
+    min-height: 0;
+    border-radius: 14px;
   }
 
   .hero,

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investimentos | Portfólio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/style.css">
+    <script src="assets/js/site.js" defer></script>
+</head>
+<body>
+    <header>
+        <div class="hero">
+            <div class="hero-copy">
+                <p class="eyebrow">Investimentos</p>
+                <h1>Relatório da Carteira</h1>
+                <h2>Painel publicado no Power BI para acompanhar a carteira de investimentos em um único lugar.</h2>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <nav class="site-nav" aria-label="Navegação principal">
+            <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Abrir navegação" data-nav-toggle>
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="tabs" data-nav-menu>
+                <a class="tab-link" href="sobre-mim.html">Sobre Mim</a>
+                <a class="tab-link" href="portfolio.html">Portfólio</a>
+                <a class="tab-link active" href="investimentos.html">Investimentos</a>
+                <a class="tab-link" href="contato.html">Contato</a>
+                <div class="tab-dropdown">
+                    <a class="tab-link" href="minigames.html">Mini Games</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-link" href="minigames.html">Snake</a>
+                        <a class="dropdown-link" href="minigames.html?game=pong">Pong</a>
+                        <a class="dropdown-link" href="minigames.html?game=arkanoid">Arkanoid</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <section class="card highlight investments-page">
+            <div class="investments-layout">
+                <article class="topic-card investments-info">
+                    <h2>Como foi feito</h2>
+                    <p class="lead">O projeto consiste em um dashboard de investimentos pessoais desenvolvido em Power BI com foco em acompanhamento patrimonial, evolução temporal da carteira, análise de rentabilidade e apoio à tomada de decisão financeira.</p>
+                    <p class="muted">A solução foi construída utilizando uma arquitetura híbrida baseada em:</p>
+                    <ul class="bullet-list">
+                        <li>Google Sheets como camada de armazenamento e integração de dados.</li>
+                        <li>Google Apps Script para automações e atualização de históricos.</li>
+                        <li>APIs financeiras e web scraping para captura de indicadores econômicos e cotações.</li>
+                        <li>Power BI para modelagem analítica, cálculos DAX e visualização.</li>
+                    </ul>
+                </article>
+
+                <div class="investments-shell">
+                    <div class="report-embed">
+                        <iframe
+                            class="report-frame"
+                            title="Dashboard - Carteira de Investimentos"
+                            width="600"
+                            height="373.5"
+                            src="https://app.powerbi.com/view?r=eyJrIjoiNjUyNGQ0MzYtNjNlMS00NWQ3LWJmODktMDk1NmNjNGNjYzA2IiwidCI6ImY3MGEwYWY2LWRhMGYtNDViZS1iN2VkLTlmOGMxYjI0YmZkZiIsImMiOjR9"
+                            frameborder="0"
+                            allowfullscreen="true"></iframe>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        2026 - Portfólio de Douglas Nascimento de Oliveira
+    </footer>
+</body>
+</html>
