@@ -2,6 +2,7 @@
     function setupMobileNav() {
         const toggle = document.querySelector("[data-nav-toggle]");
         const tabs = document.querySelector("[data-nav-menu]");
+        const dropdowns = document.querySelectorAll("[data-dropdown]");
 
         if (!toggle || !tabs) {
             return;
@@ -12,10 +13,32 @@
             toggle.setAttribute("aria-expanded", String(isOpen));
         });
 
+        dropdowns.forEach((dropdown) => {
+            const dropdownToggle = dropdown.querySelector("[data-dropdown-toggle]");
+
+            if (!dropdownToggle) {
+                return;
+            }
+
+            dropdownToggle.addEventListener("click", () => {
+                const isOpen = dropdown.classList.toggle("is-open");
+                dropdownToggle.setAttribute("aria-expanded", String(isOpen));
+            });
+        });
+
         tabs.querySelectorAll("a").forEach((link) => {
             link.addEventListener("click", () => {
                 tabs.classList.remove("is-open");
                 toggle.setAttribute("aria-expanded", "false");
+
+                dropdowns.forEach((dropdown) => {
+                    dropdown.classList.remove("is-open");
+
+                    const dropdownToggle = dropdown.querySelector("[data-dropdown-toggle]");
+                    if (dropdownToggle) {
+                        dropdownToggle.setAttribute("aria-expanded", "false");
+                    }
+                });
             });
         });
     }
