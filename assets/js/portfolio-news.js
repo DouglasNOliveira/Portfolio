@@ -47,7 +47,7 @@
     content.append(gallery, header, copy, footer); dialog.showModal();
   }
 
-  window.portfolioNews.forEach((news, index) => {
+  [...window.portfolioNews].sort((first, second) => second.publishedOn.localeCompare(first.publishedOn)).forEach((news, index) => {
     const card = document.createElement("article"); card.className = `news-card${index === 0 ? " news-card-featured" : ""}`;
     const image = new Image(); image.className = "news-card-image"; image.src = news.images[0]; image.alt = `Abrir notícia: ${news.title}`; image.loading = index < 2 ? "eager" : "lazy"; image.tabIndex = 0; image.setAttribute("role", "button");
     image.addEventListener("click", () => openNews(news));

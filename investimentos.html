@@ -1,85 +1,53 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Investimentos | Portfólio</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-    <link rel="icon" type="image/png" href="assets/favicon.png">
-    <link rel="shortcut icon" href="assets/favicon.png" type="image/png">
-    <link rel="stylesheet" href="assets/style.css">
-    <script src="assets/js/site.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Investimentos | Portfólio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link rel="stylesheet" href="assets/style.css">
+  <script src="assets/js/site.js" defer></script>
+  <script src="assets/js/investimentos-html.js" defer></script>
 </head>
 <body>
-    <header>
-        <div class="hero">
-            <div class="hero-copy">
-                <p class="eyebrow">Investimentos</p>
-                <h1>Relatório da Carteira</h1>
-                <h2>Painel publicado no Power BI para acompanhar a carteira de investimentos em um único lugar.</h2>
-            </div>
-        </div>
-    </header>
-
-    <main class="container">
-        <nav class="site-nav" aria-label="Navegação principal">
-            <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Abrir navegação" data-nav-toggle>
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-            <div class="tabs" data-nav-menu>
-                <a class="tab-link" href="index.html">Sobre Mim</a>
-                <a class="tab-link" href="portfolio.html">Portfólio</a>
-                <a class="tab-link active" href="investimentos.html">Investimentos</a>
-                <a class="tab-link" href="contato.html">Contato</a>
-                <div class="tab-dropdown" data-dropdown>
-                    <a class="tab-link" href="minigames.html">Mini Games</a>
-                    <button class="dropdown-toggle" type="button" aria-expanded="false" aria-label="Abrir submenu de Mini Games" data-dropdown-toggle>+</button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-link" href="minigames.html">Snake</a>
-                        <a class="dropdown-link" href="minigames.html?game=pong">Pong</a>
-                        <a class="dropdown-link" href="minigames.html?game=arkanoid">Arkanoid</a>
-                    </div>
-                </div>
-            </div>
-        </nav>
-
-        <section class="card highlight investments-page">
-            <div class="investments-layout">
-                <article class="topic-card investments-info">
-                    <h2>Como foi feito</h2>
-                    <p class="lead">O projeto consiste em um dashboard de investimentos pessoais desenvolvido em Power BI com foco em acompanhamento patrimonial, evolução temporal da carteira, análise de rentabilidade e apoio à tomada de decisão financeira.</p>
-                    <p class="muted">A solução foi construída utilizando uma arquitetura híbrida baseada em:</p>
-                    <ul class="bullet-list">
-                        <li>Google Sheets como camada de armazenamento e integração de dados.</li>
-                        <li>Google Apps Script para automações e atualização de históricos.</li>
-                        <li>APIs financeiras e web scraping para captura de indicadores econômicos e cotações.</li>
-                        <li>Power BI para modelagem analítica, cálculos DAX e visualização.</li>
-                    </ul>
-                </article>
-
-                <div class="investments-shell">
-                    <div class="report-embed">
-                        <iframe
-                            class="report-frame"
-                            title="Dashboard - Carteira de Investimentos"
-                            width="600"
-                            height="373.5"
-                            src="https://app.powerbi.com/view?r=eyJrIjoiNjUyNGQ0MzYtNjNlMS00NWQ3LWJmODktMDk1NmNjNGNjYzA2IiwidCI6ImY3MGEwYWY2LWRhMGYtNDViZS1iN2VkLTlmOGMxYjI0YmZkZiIsImMiOjR9"
-                            frameborder="0"
-                            allowfullscreen="true"></iframe>
-                    </div>
-                </div>
-            </div>
+  <header><div class="hero"><div class="hero-copy"><p class="eyebrow">Dados em tempo real</p><h1>Investimentos</h1><h2>Projeto pessoal de aplicação em HTML de acompanhamento de carteira de investimentos.</h2></div></div></header>
+  <main class="container">
+    <nav class="site-nav" aria-label="Navegação principal">
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Abrir navegação" data-nav-toggle><span></span><span></span><span></span></button>
+      <div class="tabs" data-nav-menu>
+        <a class="tab-link" href="index.html">Sobre Mim</a><a class="tab-link" href="portfolio.html">Portfólio</a><a class="tab-link active" href="investimentos.html">Investimentos</a><a class="tab-link" href="contato.html">Contato</a>
+        <div class="tab-dropdown" data-dropdown><a class="tab-link" href="minigames.html">Mini Games</a><button class="dropdown-toggle" type="button" aria-expanded="false" aria-label="Abrir submenu de Mini Games" data-dropdown-toggle>+</button><div class="dropdown-menu"><a class="dropdown-link" href="minigames.html">Snake</a><a class="dropdown-link" href="minigames.html?game=pong">Pong</a><a class="dropdown-link" href="minigames.html?game=arkanoid">Arkanoid</a></div></div>
+      </div>
+    </nav>
+    <section class="html-dashboard" aria-label="Dashboard de investimentos">
+      <div class="dashboard-meta"><div class="quote-ticker" data-quote-ticker aria-label="Cotações atualizadas"></div><div class="dashboard-status" data-dashboard-status><i class="bx bx-loader-alt"></i> Carregando dados públicos…</div></div>
+      <div class="dashboard-kpis" data-dashboard-kpis></div>
+      <div class="dashboard-grid">
+        <section class="dashboard-panel dashboard-panel-wide"><div class="panel-heading"><div><p class="panel-label">Evolução de cotações</p><h3>Histórico recente</h3></div><select class="dashboard-select" data-price-select aria-label="Selecionar ativo"></select></div><div class="chart-controls" aria-label="Controles do gráfico"><div class="ohlcv-controls" role="group" aria-label="Preço utilizado"><button type="button" class="chart-control active" data-ohlcv="fechamento">Close</button><button type="button" class="chart-control" data-ohlcv="minima">Min</button><button type="button" class="chart-control" data-ohlcv="maxima">Max</button><button type="button" class="chart-control" data-ohlcv="abertura">Open</button></div><div class="interval-controls" role="group" aria-label="Intervalo temporal"><button type="button" class="chart-control" data-chart-range="5D">5D</button><button type="button" class="chart-control" data-chart-range="1M">1M</button><button type="button" class="chart-control active" data-chart-range="6M">6M</button><button type="button" class="chart-control" data-chart-range="YTD">YTD</button><button type="button" class="chart-control" data-chart-range="1Y">1Y</button><button type="button" class="chart-control" data-chart-range="5Y">5Y</button><button type="button" class="chart-control" data-chart-range="MAX">MAX</button></div></div><div class="price-chart" data-price-chart aria-label="Gráfico de evolução de preço"></div></section>
+        <section class="dashboard-panel"><div class="panel-heading"><div><p class="panel-label">Alocação</p><h3 data-allocation-title>Composição por tipo</h3></div></div><div class="allocation-controls" role="group" aria-label="Detalhamento da alocação"><button class="allocation-control active" type="button" data-allocation-mode="type">Tipo</button><button class="allocation-control" type="button" data-allocation-mode="fii">FII</button><button class="allocation-control" type="button" data-allocation-mode="stock">Ações</button><button class="allocation-control" type="button" data-allocation-mode="fixed">Renda fixa</button></div><div class="allocation" data-allocation></div></section>
+        <section class="dashboard-panel dashboard-panel-wide"><div class="panel-heading"><div><p class="panel-label">Posições atuais</p><h3>Ativos em carteira</h3></div><span class="panel-note" data-positions-count></span></div><div class="dashboard-table-wrap"><table class="dashboard-table"><thead><tr><th>Ativo</th><th>Tipo</th><th>Quantidade</th><th>Cotação</th><th>Valor aplicado</th><th>Valor atual</th><th>Valorização</th></tr></thead><tbody data-positions-table></tbody></table></div></section>
+        <section class="dashboard-panel"><div class="panel-heading"><div><p class="panel-label">Movimentações</p><h3>Últimos registros</h3></div></div><div class="movement-list" data-movements-list></div></section>
+      </div>
+      <div class="asset-kpi-columns">
+        <section class="asset-section" aria-labelledby="variable-title">
+          <div class="asset-section-heading"><div><p class="eyebrow">Renda Variável</p><h2 id="variable-title">Indicadores de Mercado</h2></div><span data-variable-summary></span></div>
+          <div class="dashboard-kpis" data-variable-kpis></div>
         </section>
-    </main>
-
-    <footer class="footer">
-        2026 - Portfólio de Douglas Nascimento de Oliveira
-    </footer>
+        <section class="asset-section" aria-labelledby="fixed-title">
+          <div class="asset-section-heading"><div><p class="eyebrow">Renda Fixa</p><h2 id="fixed-title">Indicadores de Rentabilidade</h2></div><span data-fixed-summary></span></div>
+          <div class="dashboard-kpis" data-fixed-kpis></div>
+        </section>
+      </div>
+      <section class="asset-section fixed-details-section" aria-label="Detalhes da renda fixa">
+        <div class="asset-section-grid fixed-section-grid"><section class="dashboard-panel"><div class="panel-heading"><div><p class="panel-label">Histórico</p><h3>Patrimônio em renda fixa</h3></div></div><div class="fixed-history-chart" data-fixed-history-chart></div></section><section class="dashboard-panel"><div class="panel-heading"><div><p class="panel-label">Detalhes</p><h3>Depósitos e aplicações</h3></div></div><div class="dashboard-table-wrap"><table class="dashboard-table fixed-details-table"><thead><tr><th>Produto</th><th>CDI</th><th>Principal investido</th><th>Saldo bruto</th><th>Saldo líquido</th><th>Val. bruta</th><th>Val. líquida</th></tr></thead><tbody data-fixed-table></tbody></table></div></section></div>
+      </section>
+      <section class="dashboard-sources"><div><p class="panel-label">Fonte dos dados</p><p>Google Finance  &  API BRAPI</p></div><button class="news-read-button" type="button" data-dashboard-reload>Atualizar dados</button></section>
+    </section>
+  </main>
+  <footer class="footer">2026 - Portfólio de Douglas Nascimento de Oliveira</footer>
 </body>
 </html>
