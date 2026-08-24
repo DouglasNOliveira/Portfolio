@@ -1522,7 +1522,8 @@ input:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3p
 .chart-control:hover, .chart-control.active { border-color: var(--primary); background: rgba(82, 227, 255, .16); color: var(--primary); }
 .chart-control:disabled { border-color: var(--border); background: rgba(7, 22, 37, .24); color: rgba(145, 170, 193, .42); cursor: not-allowed; }
 .price-chart-canvas { position: relative; }
-.chart-value-badge { position: absolute; z-index: 3; top: 10px; right: 10px; display: grid; gap: 2px; padding: 7px 10px; border: 1px solid var(--primary); background: rgba(4, 18, 31, .92); text-align: right; pointer-events: none; }
+.price-chart-heading-actions { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+.chart-value-badge { display: grid; gap: 2px; padding: 7px 10px; border: 1px solid var(--primary); background: rgba(4, 18, 31, .92); text-align: right; pointer-events: none; }
 .chart-value-badge span { color: var(--muted); font-size: .68rem; font-weight: 700; text-transform: uppercase; }
 .chart-value-badge strong { color: var(--primary); font-size: .82rem; }
 .price-chart svg { width: 100%; overflow: visible; }
@@ -1619,6 +1620,8 @@ input:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3p
 .position-table-tooltip { position: fixed; z-index: 20; display: none; width: 390px; min-height: 238px; padding: 16px 18px; border: 1px solid rgba(82, 227, 255, .72); background: rgba(5, 20, 34, .88); color: var(--text); box-shadow: 0 18px 35px rgba(0, 0, 0, .45), 0 0 24px -12px var(--primary); backdrop-filter: blur(12px); pointer-events: none; }
 .position-table-tooltip.is-visible { display: grid; gap: 10px; }
 .position-table-tooltip h4 { margin: 0; color: var(--primary); font-size: .94rem; text-align: center; white-space: nowrap; }
+.position-tooltip-quantity { margin: -4px 0 0; color: #ffcf7b; font-size: .72rem; text-align: center; }
+.position-tooltip-quantity strong { color: #ffbe5c; }
 .position-tooltip-legend { display: flex; gap: 10px; color: var(--muted); font-size: .7rem; }
 .position-tooltip-legend span { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
 .position-tooltip-legend i { width: 12px; height: 3px; background: #6cf6c5; }
@@ -1690,6 +1693,7 @@ input:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3p
 .fixed-axis-label { fill: var(--muted); font-size: 10px; text-anchor: middle; }
 .fixed-axis-value { fill: var(--muted); font-size: 10px; text-anchor: start; }
 .fixed-axis-gain { fill: #ff7a3d; font-size: 10px; text-anchor: start; }
+.fixed-details-table tbody td:nth-child(7) { color: #ff7a3d; }
 .fixed-chart-hit-area { fill: transparent; cursor: crosshair; }
 .fixed-chart-tooltip { position: fixed; z-index: 20; display: none; width: 380px; min-height: 170px; padding: 16px 18px; border: 1px solid rgba(82, 227, 255, .72); background: rgba(5, 20, 34, .84); color: var(--text); box-shadow: 0 18px 35px rgba(0, 0, 0, .42), 0 0 24px -12px var(--primary); backdrop-filter: blur(12px); pointer-events: none; }
 .fixed-chart-tooltip.is-visible { display: grid; gap: 12px; }

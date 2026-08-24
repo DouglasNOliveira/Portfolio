@@ -42,7 +42,6 @@
     const copy = document.createElement("div"); copy.className = "news-dialog-copy";
     news.body.forEach((paragraph) => copy.append(textElement("p", paragraph)));
     const footer = document.createElement("footer"); footer.className = "news-dialog-footer";
-    footer.append(textElement("p", `Por: ${news.author}`), textElement("p", `Créditos: ${news.credits}`));
     const link = document.createElement("a"); link.className = "btn"; link.href = news.link; link.target = "_blank"; link.rel = "noreferrer"; link.textContent = news.linkLabel; footer.replaceChildren(link);
     content.append(gallery, header, copy, footer); dialog.showModal();
   }
