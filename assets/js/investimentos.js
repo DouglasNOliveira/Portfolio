@@ -24,7 +24,7 @@
   }
   function toNumber(value) { const normalized=String(value||"").replace(/R\$|%|\s/g,"").replace(/\./g,"").replace(",","."); return Number(normalized)||0; }
   function toDecimalRate(value) { let normalized=String(value??"").trim(); if(!normalized) return 0; const isPercentage=normalized.includes("%"); normalized=normalized.replace(/%|\s/g,""); if(normalized.includes(",")&&normalized.includes(".")) normalized=normalized.lastIndexOf(",")>normalized.lastIndexOf(".")? normalized.replace(/\./g,"").replace(",", "."):normalized.replace(/,/g,""); else normalized=normalized.replace(",", "."); const parsed=Number(normalized); const rate=isPercentage?parsed/100:parsed; return Number.isFinite(rate)&&rate>0&&rate<0.05?rate:0; }
-  function toDate(value) { const parts=String(value||"").match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/); if(parts) return new Date(Number(parts[3].length===2? `20${parts[3]}`:parts[3]),Number(parts[2])-1,Number(parts[1])); const parsed=new Date(value); return Number.isNaN(parsed)? null:parsed; }
+  function toDate(value) { const text=String(value||"").trim(); const iso=text.match(/^(\d{4})-(\d{1,2})-(\d{1,2})(?:$|[T ])/); if(iso) return new Date(Number(iso[1]),Number(iso[2])-1,Number(iso[3])); const parts=text.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/); if(parts) return new Date(Number(parts[3].length===2? `20${parts[3]}`:parts[3]),Number(parts[2])-1,Number(parts[1])); const parsed=new Date(value); return Number.isNaN(parsed)? null:parsed; }
   function escape(value) { return String(value??"").replace(/[&<>'"]/g,(char) => ({ "&": "&amp;","<": "&lt;",">": "&gt;","'": "&#39;",'"': "&quot;" }[char])); }
   async function loadSource(key,gid) { const response=await fetch(spreadsheet+gid); if(!response.ok) throw new Error(key); return parseCsv(await response.text()); }
   async function loadData() {
@@ -54,11 +54,41 @@
     points.forEach((point) => byTickerAndDate.set(`${point.ticker}|${point.date.getFullYear()}-${point.date.getMonth()}-${point.date.getDate()}`,point));
     return [...byTickerAndDate.values()].sort((left,right) => left.date-right.date);
   }
+  function positionLedger(tickerFilter) {
+    const tradesByTicker=new Map();
+    (state.data.compraVenda||[]).forEach((row,index) => {
+      const ticker=String(row.ticker||"").trim().toUpperCase();
+      const tradeDate=toDate(row.data||row.dt_movimento);
+      if(!ticker||tickerFilter&&ticker!==tickerFilter||!tradeDate) return;
+      if(!tradesByTicker.has(ticker)) tradesByTicker.set(ticker,[]);
+      tradesByTicker.get(ticker).push({ date: tradeDate,quantity: toNumber(row.qtde),amount: Math.abs(toNumber(row.valor)),fee: toNumber(row.tx_bolsa),index });
+    });
+    return Object.fromEntries([...tradesByTicker].map(([ticker,trades]) => {
+      trades.sort((a,b) => a.date-b.date||a.index-b.index);
+      let quantity=0; let invested=0; let fee=0; let cycleStart=null;
+      trades.forEach((trade) => {
+        if(trade.quantity>0) {
+          if(quantity<=0) { quantity=0; invested=0; fee=0; cycleStart=trade.date; }
+          invested+=trade.amount;
+          quantity+=trade.quantity;
+          fee+=trade.fee;
+        } else if(trade.quantity<0&&quantity>0) {
+          const sold=Math.min(-trade.quantity,quantity);
+          const fraction=sold/quantity;
+          invested-=invested*fraction;
+          fee-=fee*fraction;
+          quantity-=sold;
+          if(quantity<1e-8) { quantity=0; invested=0; fee=0; cycleStart=null; }
+        }
+      });
+      return [ticker,{ ticker,quantity,invested: Math.max(0,invested),fee: Math.max(0,fee),cycleStart }];
+    }));
+  }
   function positions() {
-    const metadata=Object.fromEntries((state.data.posicoes||[]).map((row) => [row.ticker,row]));
-    const grouped=(state.data.compraVenda||[]).reduce((all,row) => { const ticker=row.ticker; if(!ticker) return all; all[ticker]=all[ticker]||{ ticker,quantity: 0,invested: 0,fee: 0 }; all[ticker].quantity+=toNumber(row.qtde); all[ticker].invested+=toNumber(row.valor); all[ticker].fee+=toNumber(row.tx_bolsa); return all; },{});
+    const metadata=Object.fromEntries((state.data.posicoes||[]).map((row) => [String(row.ticker||"").trim().toUpperCase(),row]));
+    const grouped=positionLedger();
     const today=new Date(); const historical=(state.data.cotacoes||[]).map((row) => ({ ticker: row.ticker,date: toDate(row.data),quote: toNumber(row.fechamento) })).filter((row) => row.date&&row.date<=today&&row.quote);
-    return Object.values(grouped).map((item) => { const meta=metadata[item.ticker]||{}; const type=meta.tp_ativo||"Renda Variável"; const lastQuote=historical.filter((row) => row.ticker===item.ticker).sort((a,b) => b.date-a.date)[0]?.quote; const currentQuote=toNumber(meta.cotacao); const quote=/cripto/i.test(type)? currentQuote:(lastQuote||currentQuote); return { ...item,type,quote,value: item.quantity*quote }; }).filter((item) => item.quantity>0&&item.value>0);
+    return Object.values(grouped).map((item) => { const meta=metadata[item.ticker]||{}; const type=meta.tp_ativo||"Renda Variável"; const lastQuote=historical.filter((row) => String(row.ticker||"").trim().toUpperCase()===item.ticker).sort((a,b) => b.date-a.date)[0]?.quote; const currentQuote=toNumber(meta.cotacao); const quote=/cripto/i.test(type)? currentQuote:(lastQuote||currentQuote); return { ...item,type,quote,value: item.quantity*quote }; }).filter((item) => item.quantity>0&&item.value>0);
   }
   function fixedModel(asOf=new Date()) {
     const rows=(state.data.aplicacoes||[]).map((row) => ({ ...row,date: toDate(row.data),value: toNumber(row.valor),cdi: toNumber(row.cdi),id: row.id_aplicacao,movement: String(row.tp_movimento||"") })).filter((row) => row.date&&row.id);
@@ -167,7 +197,8 @@
   }
   function averagePriceSeries(ticker) {
     const normalized=String(ticker||"").toLowerCase(); const keys=[`precomedio_m${normalized}`,`precomedio_${normalized}`];
-    return (state.data.precoMedio||[]).map((row) => ({ date: toDate(row.date||row.data),value: toNumber(keys.map((key) => row[key]).find(Boolean)) })).filter((item) => item.date&&item.value).sort((a,b) => a.date-b.date);
+    const cycleStart=positionLedger(String(ticker||"").trim().toUpperCase())[String(ticker||"").trim().toUpperCase()]?.cycleStart;
+    return (state.data.precoMedio||[]).map((row) => ({ date: toDate(row.date||row.data),value: toNumber(keys.map((key) => row[key]).find(Boolean)) })).filter((item) => item.date&&item.value&&(!cycleStart||item.date>=cycleStart)).sort((a,b) => a.date-b.date);
   }
 
   function renderPortfolioEvolution() {
@@ -184,7 +215,7 @@
   }
 
   function renderTable(items) {
-    const fullQuantity=new Intl.NumberFormat("pt-BR",{ maximumFractionDigits: 8 }); const btcQuantity=new Intl.NumberFormat("pt-BR",{ maximumSignificantDigits: 1 }); const tableBody=$("[data-positions-table]"); const latestAverage=(item) => averagePriceSeries(item.ticker).at(-1)?.value||(item.quantity? item.invested/item.quantity:0);
+    const fullQuantity=new Intl.NumberFormat("pt-BR",{ maximumFractionDigits: 8 }); const btcQuantity=new Intl.NumberFormat("pt-BR",{ maximumSignificantDigits: 1 }); const tableBody=$("[data-positions-table]"); const latestAverage=(item) => item.quantity?item.invested/item.quantity:0;
     $("[data-positions-count]").textContent=`${items.length} ${items.length===1? "posição":"posições"} · ${Math.floor(items.reduce((sum,item) => sum+item.quantity,0))} ativos`;
     tableBody.innerHTML=items.sort((a,b) => b.value-a.value).map((item) => { const gain=item.value-item.invested; const pct=item.invested? gain/item.invested*100:0; const isBtc=item.ticker==="BTC"; const exactQuantity=fullQuantity.format(item.quantity); const type=/cripto/i.test(item.type)? "Cripto":item.type; return `<tr data-position-ticker="${escape(item.ticker)}"><td>${escape(item.ticker)}</td><td>${escape(type)}</td><td class="${isBtc? "btc-quantity":""}">${isBtc? btcQuantity.format(item.quantity):exactQuantity}</td><td>${currency.format(item.quote)}</td><td>${currency.format(latestAverage(item))}</td><td>${currency.format(item.invested)}</td><td>${currency.format(item.value)}</td><td>${currency.format(item.fee||0)}</td><td class="${gain<0? "negative":"positive"}">${currency.format(gain)}<small>${number.format(pct)}%</small></td></tr>`; }).join("")||'<tr><td colspan="9">Nenhuma posição disponível.</td></tr>';
     let tooltip=document.querySelector("[data-position-table-tooltip]"); if(!tooltip) { tooltip=document.createElement("div"); tooltip.className="position-table-tooltip"; tooltip.dataset.positionTableTooltip=""; document.body.append(tooltip); }
@@ -199,7 +230,7 @@
   }
   function configureFixedTableHeaders() { const labels=[["name","Produto"],["cdi","Indexador"],["date","Data do aporte"],["principal","Principal investido"],["gross","Saldo bruto"],["net","Saldo líquido"],["grossGain","Val. bruta"],["netGain","Val. líquida"]]; document.querySelectorAll(".fixed-details-table thead th").forEach((cell,index) => { const [key,label]=labels[index]||[]; if(!key) return; cell.innerHTML=`<button type="button" data-fixed-sort="${key}" aria-sort="${state.fixedSort.key===key? state.fixedSort.direction:"none"}">${label}</button>`; }); }
   function render() { const items=positions(); const fixed=fixedModel(); renderTicker(items); renderKpis(items,fixed); renderAllocation(items,fixed); renderTable(items); document.querySelectorAll("[data-position-sort]").forEach((control) => control.setAttribute("aria-sort",control.dataset.positionSort===state.positionSort.key? state.positionSort.direction:"none")); renderMovements(); const detailHeader=$("[data-movement-sort=\"date\"]"); if(detailHeader) { const label=document.createElement("span"); label.textContent="Detalhe"; detailHeader.replaceWith(label); } renderChart(); renderPortfolioEvolution(); renderAssetClasses(items,fixed); configureFixedTableHeaders(); }
-  document.addEventListener("click",(event) => { const button=event.target.closest("[data-position-sort]"); if(!button) return; const key=button.dataset.positionSort; state.positionSort={ key,direction: state.positionSort.key===key&&state.positionSort.direction==="asc"? "desc":"asc" }; const average=(item) => averagePriceSeries(item.ticker).at(-1)?.value||(item.quantity? item.invested/item.quantity:0); const metric=(item) => ({ ticker: item.ticker,type: item.type,quantity: item.quantity,quote: item.quote,average: average(item),invested: item.invested,value: item.value,fee: item.fee||0,gain: item.value-item.invested }[key]); const direction=state.positionSort.direction==="asc"? 1:-1; const byTicker=new Map(positions().map((item) => [item.ticker,item])); const body=$("[data-positions-table]");[...body.querySelectorAll("tr[data-position-ticker]")].sort((left,right) => { const a=metric(byTicker.get(left.dataset.positionTicker)); const b=metric(byTicker.get(right.dataset.positionTicker)); return typeof a==="string"? direction*a.localeCompare(b,"pt-BR"):direction*(a-b); }).forEach((row) => body.appendChild(row)); document.querySelectorAll("[data-position-sort]").forEach((control) => control.setAttribute("aria-sort",control===button? state.positionSort.direction:"none")); });
+  document.addEventListener("click",(event) => { const button=event.target.closest("[data-position-sort]"); if(!button) return; const key=button.dataset.positionSort; state.positionSort={ key,direction: state.positionSort.key===key&&state.positionSort.direction==="asc"? "desc":"asc" }; const average=(item) => item.quantity?item.invested/item.quantity:0; const metric=(item) => ({ ticker: item.ticker,type: item.type,quantity: item.quantity,quote: item.quote,average: average(item),invested: item.invested,value: item.value,fee: item.fee||0,gain: item.value-item.invested }[key]); const direction=state.positionSort.direction==="asc"? 1:-1; const byTicker=new Map(positions().map((item) => [item.ticker,item])); const body=$("[data-positions-table]");[...body.querySelectorAll("tr[data-position-ticker]")].sort((left,right) => { const a=metric(byTicker.get(left.dataset.positionTicker)); const b=metric(byTicker.get(right.dataset.positionTicker)); return typeof a==="string"? direction*a.localeCompare(b,"pt-BR"):direction*(a-b); }).forEach((row) => body.appendChild(row)); document.querySelectorAll("[data-position-sort]").forEach((control) => control.setAttribute("aria-sort",control===button? state.positionSort.direction:"none")); });
   document.addEventListener("click",(event) => { const button=event.target.closest("[data-fixed-sort]"); if(!button) return; const key=button.dataset.fixedSort; state.fixedSort={ key,direction: state.fixedSort.key===key&&state.fixedSort.direction==="asc"? "desc":"asc" }; const columns={ name: 0,cdi: 1,date: 2,principal: 3,gross: 4,net: 5,grossGain: 6,netGain: 7 }; const column=columns[key]; const direction=state.fixedSort.direction==="asc"? 1:-1; const body=$("[data-fixed-table]"); const metric=(row) => { const value=row.cells[column]?.textContent.trim()||""; return key==="name"? value:key==="date"? toDate(value)?.getTime()||0:toNumber(value); };[...body.querySelectorAll("tr")].sort((left,right) => { const a=metric(left); const b=metric(right); return typeof a==="string"? direction*a.localeCompare(b,"pt-BR"):direction*(a-b); }).forEach((row) => body.appendChild(row)); document.querySelectorAll("[data-fixed-sort]").forEach((control) => control.setAttribute("aria-sort",control===button? state.fixedSort.direction:"none")); });
   const backToTop=$("[data-back-to-top]"); if(backToTop) { const updateBackToTop=() => backToTop.classList.toggle("is-visible",window.scrollY>420); window.addEventListener("scroll",updateBackToTop,{ passive: true }); updateBackToTop(); backToTop.addEventListener("click",() => window.scrollTo({ top: 0,behavior: "smooth" })); }
   $("[data-dashboard-reload]").addEventListener("click",loadData); loadData().catch(() => { $("[data-dashboard-status]").textContent="Não foi possível carregar os dados agora."; });
