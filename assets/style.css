@@ -419,6 +419,9 @@ header::after {
   background: var(--surface-strong);
   transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
 }
+.tools-card { display: grid; grid-template-rows: auto 1fr; gap: 0; }
+.tools-card h3 { margin: 0 0 4px; }
+.tools-card .bullet-list { height: 100%; align-content: space-between; }
 
 .topic-card:hover {
   transform: translateY(-5px);
