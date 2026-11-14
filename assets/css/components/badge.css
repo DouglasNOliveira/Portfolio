@@ -1,0 +1,50 @@
+/* ==========================================================================
+   BADGES E AVISOS
+   ========================================================================== */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  height: 36px;
+  padding: 6px 12px;
+  border: 1px solid currentColor;
+  font-size: 0.82rem;
+  font-weight: 800;
+  white-space: nowrap;
+
+  &.success {
+    color: var(--success);
+    background: rgba(65, 240, 184, 0.08);
+  }
+
+  &.muted {
+    color: #9fb6ca;
+    background: rgba(159, 182, 202, 0.08);
+  }
+}
+
+.notice {
+  padding: 14px 16px;
+  border: 1px dashed rgba(82, 227, 255, 0.34);
+  background: rgba(82, 227, 255, 0.06);
+  color: var(--muted);
+}
+
+/* Aviso com ícone à esquerda */
+.info-strip {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.info-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  color: var(--primary);
+  background: var(--primary-tint);
+}

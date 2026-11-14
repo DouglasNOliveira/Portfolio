@@ -1,0 +1,296 @@
+/* ==========================================================================
+   INVESTIMENTOS · TABELAS
+   1. Tabela genérica (posições e renda fixa) → .dashboard-table
+   2. Lista de movimentações                 → .movement-*
+   ========================================================================== */
+
+.dashboard-table-wrap {
+  max-height: 400px;
+  overflow: auto;
+}
+
+.dashboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.79rem;
+
+  & th,
+  & td {
+    padding: 10px 6px;
+    border-bottom: 1px solid var(--border);
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  /* Duas primeiras colunas (ativo e tipo) alinhadas à esquerda */
+  & th:first-child,
+  & td:first-child,
+  & th:nth-child(2),
+  & td:nth-child(2) {
+    text-align: left;
+  }
+
+  & th {
+    color: var(--muted);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+  }
+
+  & thead th {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    background: var(--surface-table-head);
+  }
+
+  /* Cabeçalho clicável para ordenar */
+  & th button {
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: inherit;
+    text-transform: inherit;
+    cursor: pointer;
+  }
+
+  & td small {
+    display: block;
+    margin-top: 2px;
+    font-size: 0.7rem;
+  }
+
+  & .positive { color: var(--success); }
+  & .negative { color: var(--danger); }
+
+  /* Tooltip simples nas células (texto vem do atributo data-tooltip) */
+  & td[data-tooltip] {
+    position: relative;
+    cursor: help;
+
+    &::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: calc(100% + 6px);
+      left: 50%;
+      z-index: 5;
+      display: none;
+      padding: 6px 8px;
+      border: 1px solid var(--primary);
+      background: var(--surface-tooltip);
+      color: var(--text);
+      font-size: 0.72rem;
+      font-weight: 700;
+      line-height: 1.35;
+      white-space: nowrap;
+      pointer-events: none;
+      transform: translateX(-50%);
+    }
+
+    &:hover::after,
+    &:focus::after {
+      display: block;
+    }
+  }
+
+  & td.btc-quantity {
+    color: var(--btc);
+    font-weight: 800;
+
+    &::after {
+      border-color: var(--btc);
+      background: rgba(53, 34, 11, 0.98);
+      color: #ffe0aa;
+    }
+  }
+}
+
+/* Setas de ordenação (tabela de posições e movimentações) */
+.dashboard-table th button::after,
+.movement-sort::after {
+  content: "↕";
+  display: inline-block;
+  width: 0.9em;
+  margin-left: 3px;
+  color: var(--primary);
+  opacity: 0.4;
+}
+
+.dashboard-table th button[aria-sort="asc"]::after,
+.movement-sort[aria-sort="asc"]::after {
+  content: "↑";
+  opacity: 1;
+}
+
+.dashboard-table th button[aria-sort="desc"]::after,
+.movement-sort[aria-sort="desc"]::after {
+  content: "↓";
+  opacity: 1;
+}
+
+/* Tabela de renda fixa */
+.fixed-details-table {
+  min-width: 840px;
+
+  & tbody td:nth-child(7) {
+    color: var(--chart-gain);
+  }
+}
+
+.fixed-details-section .dashboard-table-wrap {
+  @media (max-width: 900px) {
+    max-height: 440px;
+  }
+}
+
+/* ==========================================================================
+   2. MOVIMENTAÇÕES
+   Os tamanhos ficam em variáveis para o mobile ajustar tudo de uma vez.
+   ========================================================================== */
+
+.movement-panel {
+  --movement-title-size: 1.22rem;
+  --movement-label-size: 0.75rem;
+  /* Mesmo tamanho da tabela de posições (layout.css) */
+  --movement-header-size: 0.68rem;
+  --movement-asset-size: 0.68rem;
+  --movement-detail-size: 0.68rem;
+  --movement-value-size: 0.68rem;
+  --movement-columns: 118px minmax(0, 1fr) 92px;
+
+  & h3 {
+    font-size: var(--movement-title-size);
+  }
+
+  @media (max-width: 760px) {
+    --movement-columns: 82px minmax(0, 1fr) 82px;
+  }
+
+  @media (max-width: 430px) {
+    --movement-columns: 74px minmax(0, 1fr) 76px;
+  }
+}
+
+.movement-heading {
+  align-items: center;
+
+  @media (max-width: 760px) {
+    align-items: flex-start;
+  }
+
+  @media (max-width: 430px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.movement-filter {
+  display: grid;
+  gap: 4px;
+  min-width: 148px;
+  color: var(--muted);
+  font-size: var(--movement-label-size);
+  font-weight: 800;
+  text-transform: uppercase;
+
+  & .dashboard-select {
+    min-height: 34px;
+    padding: 6px 28px 6px 10px;
+    font-size: 0.78rem;
+
+    @media (max-width: 760px) {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 760px) {
+    min-width: 126px;
+  }
+
+  @media (max-width: 430px) {
+    width: 100%;
+  }
+}
+
+.movement-table-head,
+.movement {
+  display: grid;
+  grid-template-columns: var(--movement-columns);
+  align-items: center;
+  justify-items: center;
+  gap: 10px;
+}
+
+.movement-table-head {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  min-height: 42px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-table-head);
+  color: var(--muted);
+  font-size: var(--movement-header-size);
+  font-weight: 700;
+  text-transform: uppercase;
+
+  & button,
+  & span {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+.movement-sort {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+
+  /* A seta visível vem do ::after; o <i> do JS fica só para leitores de tela */
+  & i {
+    display: none;
+  }
+}
+
+.movement {
+  min-height: 54px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+
+  & strong,
+  & span,
+  & b {
+    width: 100%;
+    text-align: center;
+  }
+
+  & strong {
+    overflow: hidden;
+    font-size: var(--movement-asset-size);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & span {
+    overflow: hidden;
+    color: var(--muted);
+    font-size: var(--movement-detail-size);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & b {
+    color: var(--primary);
+    font-size: var(--movement-value-size);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 760px) {
+    min-height: 50px;
+  }
+}

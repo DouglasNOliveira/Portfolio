@@ -1,0 +1,86 @@
+/* ==========================================================================
+   BOTÕES E LINKS DE AÇÃO
+   ========================================================================== */
+
+/* Botão principal (contorno ciano que preenche no hover) */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  min-height: 48px;
+  padding: 0 20px;
+  border: 1px solid var(--primary);
+  background: rgba(82, 227, 255, 0.1);
+  color: var(--primary);
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    color: var(--ink);
+    background: var(--primary);
+    box-shadow: 0 0 24px -7px var(--primary);
+    filter: saturate(1.05);
+  }
+
+  &:disabled {
+    opacity: 0.72;
+    cursor: wait;
+    transform: none;
+  }
+
+  & .bx {
+    margin-right: 8px;
+    font-size: 1.1rem;
+  }
+}
+
+/* Botão que parece link (sem borda nem fundo) */
+.text-button {
+  border: 0;
+  background: transparent;
+  color: var(--primary);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+
+  &:hover {
+    color: #fff;
+  }
+}
+
+/* Ícones quadrados de redes sociais */
+.social-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--border);
+  background: rgba(5, 19, 33, 0.4);
+  color: var(--primary);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, color 0.18s ease;
+
+  & .bx {
+    font-size: 1.35rem;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    background: var(--primary);
+    color: var(--ink);
+    box-shadow: 0 0 20px -7px var(--primary);
+  }
+}

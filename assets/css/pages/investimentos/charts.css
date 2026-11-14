@@ -1,0 +1,466 @@
+/* ==========================================================================
+   INVESTIMENTOS · GRÁFICOS
+   1. Cotação (linha)            → .price-chart
+   2. Patrimônio × Proventos     → .portfolio-evolution-*
+   3. Histórico da renda fixa    → .fixed-*
+   Os SVGs são gerados por investimentos.js.
+   ========================================================================== */
+
+/* Badge de valor atual exibido no canto dos gráficos */
+.chart-value-badge,
+.portfolio-current-badge,
+.fixed-history-chart .chart-range strong {
+  display: grid;
+  gap: 2px;
+  padding: 7px 10px;
+  border: 1px solid var(--primary);
+  background: var(--surface-badge);
+  text-align: right;
+}
+
+.chart-value-badge span,
+.portfolio-current-badge span,
+.fixed-history-chart .chart-range strong::before {
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.chart-value-badge strong,
+.portfolio-current-badge strong,
+.fixed-history-chart .chart-range strong {
+  color: var(--primary);
+  font-size: 0.82rem;
+}
+
+/* Linhas tracejadas de virada de ano (usadas em mais de um gráfico) */
+.chart-year-separator {
+  stroke: rgba(82, 227, 255, 0.38);
+  stroke-width: 1;
+  stroke-dasharray: 3 5;
+  vector-effect: non-scaling-stroke;
+}
+
+.chart-year-label {
+  fill: rgba(159, 185, 209, 0.62);
+  font-size: 9px;
+  font-weight: 700;
+  text-anchor: middle;
+}
+
+/* ==========================================================================
+   1. GRÁFICO DE COTAÇÃO
+   ========================================================================== */
+
+.price-chart {
+  display: grid;
+  align-content: end;
+  min-height: 285px;
+
+  & svg {
+    width: 100%;
+    overflow: visible;
+  }
+
+  @media (max-width: 760px) {
+    display: block;
+    min-height: 0;
+  }
+}
+
+.price-chart-heading-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.chart-value-badge {
+  pointer-events: none;
+}
+
+/* Botões de preço (Close/Min/Max/Open) e intervalo (5D…MAX) */
+.chart-controls {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0 4px;
+
+  @media (max-width: 760px) {
+    gap: 4px;
+    margin: 6px 0;
+  }
+}
+
+.ohlcv-controls,
+.interval-controls {
+  display: grid;
+  gap: 6px;
+
+  @media (max-width: 760px) {
+    gap: 4px;
+  }
+}
+
+.ohlcv-controls {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.interval-controls {
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+
+  @media (max-width: 760px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.chart-control {
+  min-height: 32px;
+  border: 1px solid var(--border);
+  background: rgba(7, 22, 37, 0.48);
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 800;
+  cursor: pointer;
+
+  &:hover,
+  &.active {
+    border-color: var(--primary);
+    background: var(--primary-tint-strong);
+    color: var(--primary);
+  }
+
+  &:disabled {
+    border-color: var(--border);
+    background: rgba(7, 22, 37, 0.24);
+    color: rgba(145, 170, 193, 0.42);
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 760px) {
+    min-height: 28px;
+    font-size: 0.68rem;
+  }
+}
+
+/* Área do SVG; .is-inspecting é ligado pelo JS durante o hover */
+.price-chart-canvas {
+  position: relative;
+
+  &.is-inspecting .price-chart-guide,
+  &.is-inspecting .price-chart-point,
+  &.is-inspecting .price-chart-tooltip {
+    display: block;
+  }
+}
+
+.price-chart-area {
+  fill: var(--primary-tint);
+}
+
+.price-chart-line {
+  fill: none;
+  stroke: var(--primary);
+  stroke-width: 3;
+  vector-effect: non-scaling-stroke;
+}
+
+.price-chart-guide {
+  display: none;
+  stroke: rgba(226, 239, 255, 0.65);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+
+.price-chart-point {
+  display: none;
+  fill: var(--primary);
+  stroke: var(--surface);
+  stroke-width: 3;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+
+.price-chart-hit-area {
+  fill: transparent;
+  outline: none;
+  cursor: crosshair;
+
+  &:focus {
+    fill: rgba(82, 227, 255, 0.025);
+  }
+}
+
+.chart-range {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 0.8rem;
+
+  & strong {
+    color: var(--primary);
+  }
+}
+
+/* ==========================================================================
+   2. EVOLUÇÃO PATRIMÔNIO × PROVENTOS
+   ========================================================================== */
+
+.portfolio-evolution-panel {
+  position: relative;
+}
+
+.portfolio-evolution-chart {
+  min-height: 330px;
+
+  @media (max-width: 760px) {
+    display: block;
+    min-height: 0;
+  }
+}
+
+.portfolio-current-badge {
+  position: absolute;
+  top: 26px;
+  right: 32px;
+  z-index: 4;
+}
+
+.portfolio-chart-legend {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin: 2px 0 10px;
+  color: var(--muted);
+  font-size: 0.78rem;
+
+  & span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  & i {
+    width: 14px;
+    height: 9px;
+    background: var(--chart-principal);
+  }
+
+  & span + span i {
+    height: 3px;
+    background: var(--chart-net);
+  }
+
+  @media (max-width: 760px) {
+    margin-bottom: 6px;
+  }
+}
+
+.portfolio-chart-canvas {
+  position: relative;
+
+  & svg {
+    display: block;
+    width: 100%;
+    overflow: visible;
+  }
+}
+
+.portfolio-value-bar {
+  fill: var(--chart-principal);
+}
+
+.portfolio-dividends-area {
+  fill: rgba(0, 184, 107, 0.25);
+  pointer-events: none;
+}
+
+.portfolio-dividends-line {
+  fill: none;
+  stroke: var(--chart-net);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.portfolio-chart-hit-area {
+  fill: transparent;
+  cursor: crosshair;
+}
+
+/* ==========================================================================
+   3. HISTÓRICO DA RENDA FIXA
+   ========================================================================== */
+
+.panel-fixed-history {
+  position: relative;
+}
+
+.fixed-history-chart {
+  display: grid;
+  align-content: end;
+  min-height: 440px;
+
+  /* O valor final do gráfico vira um badge no canto do painel */
+  & .chart-range strong {
+    position: absolute;
+    top: 26px;
+    right: 32px;
+    z-index: 4;
+
+    &::before {
+      content: "Saldo bruto";
+    }
+  }
+
+  @media (max-width: 760px) {
+    display: block;
+    min-height: 0;
+  }
+}
+
+.fixed-chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin: 0 0 10px;
+  color: var(--muted);
+  font-size: 0.78rem;
+
+  & span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  & i {
+    width: 16px;
+    height: 3px;
+  }
+
+  @media (max-width: 760px) {
+    margin: 0 0 6px;
+  }
+
+  @media (max-width: 720px) {
+    gap: 6px 10px;
+  }
+}
+
+.legend-principal { background: var(--chart-principal); }
+.legend-gross { background: var(--primary); }
+.legend-gross-gain { background: var(--chart-gain); }
+.legend-net-gain { background: var(--chart-net); }
+
+.fixed-combo-chart {
+  position: relative;
+
+  & svg {
+    display: block;
+    width: 100%;
+    overflow: visible;
+  }
+}
+
+.fixed-grid-line {
+  stroke: rgba(159, 185, 209, 0.16);
+  stroke-dasharray: 2 5;
+  vector-effect: non-scaling-stroke;
+}
+
+.fixed-principal-bar { fill: var(--chart-principal); }
+.fixed-gross-bar { fill: var(--primary); }
+
+.fixed-net-area {
+  fill: rgba(0, 184, 107, 0.25);
+  pointer-events: none;
+}
+
+.fixed-gross-band {
+  fill: rgba(255, 122, 61, 0.5);
+  pointer-events: none;
+}
+
+.fixed-gross-line,
+.fixed-net-line {
+  fill: none;
+  stroke-width: 2.25;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.fixed-gross-line { stroke: var(--chart-gain); }
+.fixed-net-line { stroke: var(--chart-net); }
+
+.fixed-axis-label,
+.fixed-axis-value,
+.fixed-axis-gain {
+  font-size: 10px;
+}
+
+.fixed-axis-label {
+  fill: var(--muted);
+  text-anchor: middle;
+
+  @media (max-width: 720px) {
+    font-size: 8px;
+  }
+}
+
+.fixed-axis-value {
+  fill: var(--muted);
+  text-anchor: start;
+}
+
+.fixed-axis-gain {
+  fill: var(--chart-gain);
+  text-anchor: start;
+}
+
+.fixed-chart-hit-area {
+  fill: transparent;
+  cursor: crosshair;
+}
+
+/* ==========================================================================
+   MOBILE: gráficos com badge flutuante (evolução e renda fixa)
+   Reserva espaço no título para o badge não sobrepor o texto.
+   ========================================================================== */
+
+@media (max-width: 760px) {
+  .portfolio-evolution-panel .panel-heading > div:first-child,
+  .panel-fixed-history .panel-heading > div:first-child {
+    min-width: 0;
+    padding-right: 118px;
+  }
+
+  .portfolio-evolution-panel .panel-heading h3,
+  .panel-fixed-history .panel-heading h3 {
+    font-size: clamp(0.92rem, 4.25vw, 1.2rem);
+    line-height: 1.2;
+  }
+
+  .portfolio-current-badge,
+  .fixed-history-chart .chart-range strong {
+    top: 16px;
+    right: 16px;
+    max-width: 108px;
+    padding: 6px 7px;
+  }
+
+  .portfolio-current-badge span,
+  .fixed-history-chart .chart-range strong::before {
+    font-size: clamp(0.52rem, 2.4vw, 0.68rem);
+  }
+
+  .portfolio-current-badge strong,
+  .fixed-history-chart .chart-range strong {
+    font-size: clamp(0.68rem, 3.3vw, 0.82rem);
+  }
+}

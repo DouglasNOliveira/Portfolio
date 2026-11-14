@@ -1,0 +1,53 @@
+/* ==========================================================================
+   TOKENS DE DESIGN
+   Fonte única de cores, sombras e fontes. Para mudar a identidade visual do
+   site, altere aqui — nenhum outro arquivo deveria repetir estes valores.
+   ========================================================================== */
+
+:root {
+  /* Tipografia */
+  --font-sans: "Manrope", "Segoe UI", system-ui, -apple-system, sans-serif;
+
+  /* Texto */
+  --text: #e8f5ff;
+  --muted: #91aac1;
+  --ink: #06111d;               /* texto escuro sobre fundo ciano */
+
+  /* Cor de marca */
+  --primary: #52e3ff;
+  --accent: #a075ff;            /* violeta (ponta final do filtro de anos) */
+  --primary-tint: rgba(82, 227, 255, 0.08);
+  --primary-tint-strong: rgba(82, 227, 255, 0.16);
+
+  /* Superfícies */
+  --surface: rgba(11, 29, 47, 0.62);
+  --surface-panel: rgba(7, 22, 37, 0.55);
+  --surface-solid: #091827;
+  --surface-table-head: #081827;
+  --surface-badge: rgba(4, 18, 31, 0.92);
+  --surface-tooltip: rgba(4, 18, 31, 0.96);
+
+  /* Bordas e sombras */
+  --border: rgba(125, 224, 255, 0.18);
+  --border-strong: rgba(125, 224, 255, 0.4);
+  --shadow: 0 24px 60px -36px rgba(0, 0, 0, 0.86);
+  --shadow-soft: 0 16px 38px -30px rgba(0, 0, 0, 0.9);
+
+  /* Status */
+  --success: #6cf6c5;
+  --danger: #ff718d;
+  --btc: #ffbe5c;
+
+  /* Séries dos gráficos de investimentos */
+  --chart-principal: #167ca7;
+  --chart-net: #00b86b;
+  --chart-gain: #ff7a3d;
+}
+
+/* Breakpoints usados no projeto (CSS não aceita var() dentro de @media):
+   1000px  desktop estreito
+    900px  tablet
+    760px  mobile (principal)
+    600px  mobile médio
+    430px  mobile pequeno
+    340px  mobile muito pequeno */

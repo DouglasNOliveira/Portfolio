@@ -1,0 +1,12 @@
+/* ==========================================================================
+   PÁGINA: INVESTIMENTOS
+   O dashboard é grande, então foi dividido por assunto em investimentos/.
+   ========================================================================== */
+
+@import url("investimentos/layout.css");      /* estrutura, painéis, ticker, rodapé de fontes */
+@import url("investimentos/kpis.css");        /* cartões de indicadores e seções por classe de ativo */
+@import url("investimentos/charts.css");      /* gráfico de cotação, evolução e renda fixa */
+@import url("investimentos/year-range.css");  /* filtro de anos (slider duplo) dos gráficos de colunas */
+@import url("investimentos/allocation.css");  /* rosca de alocação e legenda */
+@import url("investimentos/tables.css");      /* tabela de posições, renda fixa e movimentações */
+@import url("investimentos/tooltips.css");    /* tooltips flutuantes dos gráficos e tabela */

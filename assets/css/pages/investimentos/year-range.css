@@ -1,0 +1,136 @@
+/* ==========================================================================
+   INVESTIMENTOS · FILTRO DE ANOS (slider duplo)
+   Usado nos gráficos de colunas de renda variável e renda fixa.
+   Ponta inicial em ciano (--primary), ponta final em violeta (--accent).
+   O HTML é gerado por yearRangeSlider() em investimentos.js.
+   ========================================================================== */
+
+/* Fica na linha do título, à esquerda do badge de valor (que é absoluto
+   no canto do painel). A margem direita reserva o espaço do badge. */
+.panel-heading:has(.year-range-filter) {
+  flex-wrap: wrap;
+}
+
+.year-range-filter {
+  flex: 0 1 440px;
+  min-width: 320px;
+  margin: 6px 150px 0 auto;
+
+  /* Em telas menores não cabe ao lado do título: vai para uma linha própria */
+  @media (max-width: 900px) {
+    flex-basis: 100%;
+    min-width: 0;
+    margin: 4px 0 0;
+  }
+}
+
+.year-range {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 18px;
+
+  /* Limite no conteúdo (não no contêiner, que precisa de 100% para quebrar linha) */
+  @media (max-width: 900px) {
+    max-width: 520px;
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    max-width: none;
+  }
+}
+
+/* Texto do intervalo selecionado: "2024 – 2026" ou "2025" */
+.year-range-value {
+  padding-top: 4px;
+  color: var(--text);
+  font-size: 0.85rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+/* Margem lateral para as pontas e os rótulos não saírem da área */
+.year-range-control {
+  padding-inline: 14px;
+}
+
+.year-range-slider {
+  position: relative;
+  height: 28px;
+  cursor: pointer;
+  touch-action: pan-y;
+}
+
+.year-range-track {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  height: 4px;
+  transform: translateY(-50%);
+  background: rgba(125, 224, 255, 0.14);
+}
+
+/* Trecho selecionado, com degradê de uma cor da ponta para a outra */
+.year-range-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+}
+
+.year-range-thumb {
+  --thumb-color: var(--primary);
+
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  transform: translate(-50%, -50%);
+  border: 2px solid var(--thumb-color);
+  background: var(--surface-solid);
+  box-shadow: 0 0 12px -2px var(--thumb-color);
+  cursor: grab;
+  transition: box-shadow 0.15s ease;
+
+  &.is-end {
+    --thumb-color: var(--accent);
+    z-index: 2;
+  }
+
+  &:hover,
+  &:focus-visible {
+    outline: none;
+    background: var(--thumb-color);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--thumb-color) 20%, transparent), 0 0 14px -2px var(--thumb-color);
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+/* Rótulos dos anos sob o trilho */
+.year-range-ticks {
+  position: relative;
+  height: 16px;
+
+  & span {
+    position: absolute;
+    transform: translateX(-50%);
+    color: var(--muted);
+    font-size: 0.7rem;
+    font-weight: 700;
+    opacity: 0.55;
+    transition: opacity 0.15s ease, color 0.15s ease;
+
+    &.is-active {
+      color: var(--text);
+      opacity: 1;
+    }
+  }
+}

@@ -1,0 +1,16 @@
+/* ==========================================================================
+   RODAPÉ
+   ========================================================================== */
+
+.footer {
+  margin-top: 48px;
+  padding: 26px 12px 34px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-weight: 700;
+  text-align: center;
+
+  @media (max-width: 760px) {
+    margin-top: 32px;
+  }
+}

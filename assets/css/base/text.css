@@ -1,0 +1,20 @@
+/* ==========================================================================
+   UTILITÁRIOS DE TEXTO
+   ========================================================================== */
+
+.lead {
+  margin: 0 0 16px;
+  color: var(--muted);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.bullet-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted);
+}

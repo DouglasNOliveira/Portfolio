@@ -1,0 +1,313 @@
+/* ==========================================================================
+   INVESTIMENTOS · ALOCAÇÃO (gráfico de rosca + legenda)
+   ========================================================================== */
+
+/* Chave de estado no canto do cabeçalho:
+   esquerda = Aplicado (violeta), direita = Valor atual (ciano, padrão) */
+/* Fica no canto, na linha do rótulo ("ALOCAÇÃO"), fora do fluxo:
+   assim o título abaixo usa a largura toda do painel */
+.panel-heading:has(> .state-switch) {
+  position: relative;
+}
+
+.panel-heading > .state-switch {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.state-switch {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  line-height: 1;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--text);
+  }
+
+  &:focus-visible {
+    outline: none;
+
+    & .state-switch-track {
+      box-shadow: 0 0 0 3px rgba(82, 227, 255, 0.18);
+    }
+  }
+}
+
+.state-switch-label {
+  min-width: 82px;
+  text-align: right;
+}
+
+.state-switch-track {
+  position: relative;
+  width: 40px;
+  height: 20px;
+  border: 1px solid var(--border-strong);
+  background: rgba(7, 22, 37, 0.8);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.state-switch-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 12px;
+  height: 12px;
+  background: var(--accent);
+  box-shadow: 0 0 10px -2px var(--accent);
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Ligada (aria-checked="true") = Valor atual: cursor à direita, em ciano */
+.state-switch[aria-checked="true"] {
+  & .state-switch-track {
+    border-color: rgba(82, 227, 255, 0.45);
+  }
+
+  & .state-switch-thumb {
+    background: var(--primary);
+    box-shadow: 0 0 10px -2px var(--primary);
+    transform: translateX(20px);
+  }
+}
+
+/* Filtros em 2 linhas: classes (Tipo / Renda variável / Renda fixa)
+   e detalhamento (FII / Ações / Cripto) */
+.allocation-controls {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin: -4px 0 16px;
+
+  @media (max-width: 760px) {
+    gap: 4px;
+    margin: -2px 0 10px;
+  }
+}
+
+.allocation-control {
+  min-height: 31px;
+  border: 1px solid var(--border);
+  background: rgba(7, 22, 37, 0.48);
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.7rem;
+  font-weight: 800;
+  cursor: pointer;
+
+  &:hover,
+  &.active {
+    border-color: var(--primary);
+    background: var(--primary-tint-strong);
+    color: var(--primary);
+  }
+
+  @media (max-width: 760px) {
+    min-height: 27px;
+    font-size: 0.65rem;
+  }
+}
+
+.allocation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+
+  @media (max-width: 760px) {
+    gap: 14px;
+  }
+
+  @media (max-width: 340px) {
+    gap: 10px;
+  }
+}
+
+/* Rosca: o conic-gradient vem inline do JS; o ::after "fura" o centro */
+.allocation-ring {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 205px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 27px;
+    border-radius: 50%;
+    background: var(--surface-solid);
+  }
+
+  & > span {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 2px;
+    max-width: 130px;
+    color: var(--text);
+    font-size: 0.88rem;
+    font-weight: 800;
+    text-align: center;
+
+    & b,
+    & small {
+      display: block;
+    }
+
+    & small {
+      color: var(--muted);
+      font-size: 0.68rem;
+    }
+  }
+
+  @media (max-width: 760px) {
+    flex: 0 0 130px;
+    width: 130px;
+
+    &::after {
+      inset: 18px;
+    }
+
+    & > span {
+      max-width: 96px;
+      font-size: 0.76rem;
+    }
+  }
+
+  @media (max-width: 340px) {
+    flex-basis: 110px;
+    width: 110px;
+
+    &::after {
+      inset: 16px;
+    }
+  }
+}
+
+/* Acompanha o mouse: --tooltip-x/y são definidos pelo JS a cada movimento */
+.allocation-donut-tooltip {
+  position: absolute;
+  top: var(--tooltip-y, 50%);
+  left: var(--tooltip-x, 50%);
+  z-index: 3;
+  display: none;
+  width: max-content;
+  max-width: 180px;
+  padding: 7px 9px;
+  border: 1px solid var(--primary);
+  background: var(--surface-tooltip);
+  color: var(--text);
+  font-size: 0.72rem;
+  line-height: 1.35;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translate(-50%, calc(-100% - 14px));
+
+  &.is-visible {
+    display: grid;
+  }
+
+  & strong,
+  & span {
+    display: block;
+  }
+
+  & span {
+    color: var(--muted);
+  }
+}
+
+.allocation-legend {
+  display: grid;
+  gap: 12px;
+
+  & div {
+    display: grid;
+    grid-template-columns: 10px minmax(0, 106px) 54px;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 0.82rem;
+
+    @media (max-width: 760px) {
+      min-height: 24px;
+    }
+
+    @media (max-width: 340px) {
+      grid-template-columns: 10px minmax(0, 72px) 46px;
+      gap: 5px;
+      font-size: 0.74rem;
+    }
+  }
+
+  & strong {
+    color: var(--text);
+    text-align: right;
+  }
+
+  & i {
+    width: 10px;
+    height: 10px;
+  }
+
+  @media (max-width: 760px) {
+    flex: 1 1 0;
+    align-content: start;
+    gap: 8px;
+    min-width: 0;
+  }
+}
+
+/* Item da legenda com tooltip (texto vem do atributo data-tooltip) */
+.allocation-legend-item {
+  position: relative;
+  cursor: help;
+
+  &[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: 50%;
+    right: calc(100% + 10px);
+    z-index: 4;
+    display: none;
+    max-width: 230px;
+    padding: 7px 9px;
+    border: 1px solid var(--primary);
+    background: var(--surface-tooltip);
+    color: var(--text);
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1.35;
+    white-space: nowrap;
+    pointer-events: none;
+    transform: translateY(-50%);
+
+    @media (max-width: 600px) {
+      top: calc(100% + 6px);
+      right: auto;
+      left: 0;
+      transform: none;
+    }
+  }
+
+  &[data-tooltip]:hover::after,
+  &[data-tooltip]:focus::after {
+    display: block;
+  }
+}

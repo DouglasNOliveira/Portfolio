@@ -1,0 +1,62 @@
+/* ==========================================================================
+   CARDS E GRIDS
+   .card       → bloco grande de seção (vidro + borda ciana à esquerda)
+   .topic-card → cartão menor dentro de grids, com efeito de hover
+   ========================================================================== */
+
+.grid {
+  display: grid;
+  gap: 16px;
+}
+
+.cols-2 {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.card {
+  margin-bottom: 26px;
+  padding: 28px;
+  border: 1px solid var(--border);
+  border-left: 2px solid rgba(82, 227, 255, 0.55);
+  background: linear-gradient(135deg, rgba(15, 39, 61, 0.6), rgba(8, 24, 40, 0.42));
+  backdrop-filter: blur(14px);
+  box-shadow: var(--shadow-soft);
+
+  & h2,
+  & h3 {
+    margin: 0 0 8px;
+  }
+
+  & h2 {
+    font-size: clamp(1.45rem, 2.4vw, 2rem);
+    letter-spacing: -0.035em;
+  }
+
+  @media (max-width: 760px) {
+    padding: 20px;
+  }
+}
+
+/* Variante: borda esquerda sem o destaque ciano */
+.highlight {
+  border-color: var(--border);
+}
+
+.topic-card {
+  display: grid;
+  gap: 10px;
+  padding: 22px;
+  border: 1px solid rgba(126, 215, 244, 0.2);
+  background: rgba(5, 19, 33, 0.36);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    border-color: rgba(82, 227, 255, 0.7);
+    box-shadow: inset 3px 0 0 var(--primary), 0 14px 32px -24px rgba(82, 227, 255, 0.55);
+  }
+
+  & h3 {
+    margin: 0 0 8px;
+  }
+}

@@ -1,0 +1,323 @@
+/* ==========================================================================
+   INVESTIMENTOS · ESTRUTURA DO DASHBOARD
+   ========================================================================== */
+
+.html-dashboard {
+  display: grid;
+  gap: 20px;
+}
+
+/* Superfície comum aos blocos do dashboard */
+.dashboard-meta,
+.dashboard-panel,
+.dashboard-sources {
+  border: 1px solid var(--border);
+  background: var(--surface-panel);
+}
+
+.dashboard-panel {
+  min-width: 0;
+  padding: 22px;
+
+  @media (max-width: 760px) {
+    padding: 16px;
+  }
+}
+
+.panel-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 18px;
+
+  & h3 {
+    margin: 0;
+    font-size: 1.2rem;
+  }
+}
+
+.panel-label {
+  margin: 0 0 4px;
+  color: var(--primary);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.panel-note {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.dashboard-select {
+  min-width: 130px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface-solid);
+  color: var(--text);
+  font: inherit;
+}
+
+/* ---------- Grade principal: 4 painéis ---------- */
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(300px, 0.85fr);
+  grid-template-areas:
+    "chart     allocation"
+    "positions movements";
+  align-items: stretch;
+  gap: 18px;
+
+  & > .panel-price {
+    grid-area: chart;
+  }
+
+  & > .panel-allocation {
+    grid-area: allocation;
+    display: flex;
+    flex-direction: column;
+
+    & .allocation {
+      flex: 1;
+      min-height: 0;
+
+      @media (max-width: 760px) {
+        flex: none;
+      }
+    }
+  }
+
+  & > .panel-positions {
+    grid-area: positions;
+  }
+
+  & > .panel-movements {
+    grid-area: movements;
+  }
+
+  /* Posições e movimentações: altura fixa com rolagem interna */
+  & > .panel-positions,
+  & > .panel-movements {
+    display: flex;
+    flex-direction: column;
+    height: 580px;
+    min-height: 0;
+
+    & .panel-heading {
+      min-height: 64px;
+    }
+
+    @media (max-width: 900px) {
+      height: 520px;
+    }
+
+    @media (max-width: 760px) {
+      height: 480px;
+
+      & .panel-heading {
+        min-height: 58px;
+        margin-bottom: 12px;
+      }
+    }
+
+    @media (max-width: 430px) {
+      height: 450px;
+    }
+  }
+
+  & > .panel-positions .dashboard-table-wrap {
+    height: 480px;
+    max-height: 480px;
+    padding-right: 14px;
+    overflow: auto; /* rolagem lateral quando a tabela não cabe */
+    scrollbar-gutter: stable;
+
+    @media (max-width: 900px) {
+      flex: 1;
+      height: auto;
+      min-height: 0;
+      max-height: none;
+    }
+  }
+
+  /* Fonte menor só nesta tabela, para caber no painel sem rolagem no desktop.
+     Sem min-width: o nowrap das células já define a largura mínima,
+     e o wrapper rola quando ela não cabe. */
+  & > .panel-positions .dashboard-table {
+    font-size: 0.68rem;
+
+    & th {
+      font-size: 0.68rem;
+    }
+  }
+
+  & > .panel-movements .movement-list {
+    flex: 1;
+    min-height: 0;
+    padding-right: 6px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+  }
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+    grid-template-areas: "chart" "allocation" "positions" "movements";
+  }
+}
+
+/* ---------- Barra superior: ticker de cotações + status ---------- */
+
+.dashboard-meta {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  padding: 12px 20px;
+  overflow: hidden;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+    padding: 6px 10px;
+  }
+
+  @media (max-width: 600px) {
+    gap: 8px;
+  }
+}
+
+.quote-ticker {
+  min-width: 0;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
+
+  &:hover .quote-ticker-track {
+    animation-play-state: paused;
+  }
+
+  @media (max-width: 900px) {
+    min-height: 0;
+  }
+}
+
+.quote-ticker-track {
+  display: flex;
+  width: max-content;
+  animation: quote-ticker-scroll 46s linear infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes quote-ticker-scroll {
+  to { transform: translateX(-50%); }
+}
+
+.ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 22px;
+  border-right: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.78rem;
+  white-space: nowrap;
+
+  & b { color: var(--text); }
+  & strong { color: var(--primary); }
+
+  & i {
+    font-style: normal;
+    font-weight: 800;
+  }
+
+  &.is-positive i { color: var(--success); }
+  &.is-negative i { color: var(--danger); }
+}
+
+.dashboard-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+
+  & .bx {
+    color: var(--primary);
+    font-size: 1.15rem;
+  }
+
+  @media (max-width: 900px) {
+    display: none;
+  }
+}
+
+/* ---------- Rodapé do dashboard ---------- */
+
+.dashboard-sources {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 22px;
+  color: var(--muted);
+  font-size: 0.86rem;
+
+  & p {
+    margin: 0;
+  }
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.back-to-top {
+  position: fixed;
+  right: max(18px, calc((100vw - 1300px) / 4));
+  bottom: 28px;
+  z-index: 30;
+  display: inline-grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 1px solid var(--primary);
+  background: rgba(5, 20, 34, 0.84);
+  color: var(--primary);
+  font: inherit;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px);
+  transition: opacity 0.2s ease, transform 0.2s ease, background 0.2s ease;
+  backdrop-filter: blur(12px);
+  cursor: pointer;
+
+  & i {
+    font-size: 1.2rem;
+  }
+
+  &:hover,
+  &:focus-visible {
+    outline: none;
+    background: rgba(82, 227, 255, 0.14);
+  }
+
+  &.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 760px) {
+    right: 16px;
+    bottom: 18px;
+  }
+}

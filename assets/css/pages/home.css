@@ -1,0 +1,42 @@
+/* ==========================================================================
+   PÁGINA: SOBRE MIM (index.html)
+   ========================================================================== */
+
+.profile-summary {
+  display: grid;
+  grid-template-columns: minmax(180px, 240px) minmax(0, 1fr);
+  gap: 28px;
+  align-items: center;
+
+  @media (max-width: 760px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.profile-photo {
+  justify-self: center;
+  width: 100%;
+  max-width: 228px;
+  border: 1px solid rgba(82, 227, 255, 0.45);
+  box-shadow: 12px 12px 0 rgba(160, 117, 255, 0.15);
+}
+
+/* Card de ferramentas: lista ocupa a altura toda e distribui os itens */
+.tools-card {
+  grid-template-rows: auto 1fr;
+  gap: 0;
+
+  & .bullet-list {
+    height: 100%;
+    align-content: space-between;
+  }
+}
+
+/* Card que serve apenas como título de seção */
+.compact-heading {
+  padding-block: 16px;
+
+  & h2 {
+    margin-bottom: 0;
+  }
+}

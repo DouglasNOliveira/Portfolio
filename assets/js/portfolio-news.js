@@ -55,8 +55,8 @@
     const meta = document.createElement("div"); meta.className = "news-card-meta";
     const badge = textElement("span", news.category, "badge success");
     const time = textElement("time", formatDate(news.publishedOn)); time.dateTime = news.publishedOn; meta.append(badge, time);
-    const read = textElement("button", "Ler notícia", "news-read-button"); read.type = "button"; read.addEventListener("click", () => openNews(news));
-    const direct = document.createElement("a"); direct.className = "news-direct-link"; direct.href = news.link; direct.target = "_blank"; direct.rel = "noreferrer"; direct.textContent = news.linkLabel;
+    const read = textElement("button", "Ler notícia", "text-button"); read.type = "button"; read.addEventListener("click", () => openNews(news));
+    const direct = document.createElement("a"); direct.className = "text-button news-direct-link"; direct.href = news.link; direct.target = "_blank"; direct.rel = "noreferrer"; direct.textContent = news.linkLabel;
     const actions = document.createElement("div"); actions.className = "news-card-actions"; actions.append(read, direct);
     content.append(meta, textElement("h2", news.title), textElement("p", news.summary), actions); card.append(image, content); feed.append(card);
   });

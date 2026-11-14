@@ -1,0 +1,239 @@
+/* ==========================================================================
+   PÁGINA: MINI GAMES
+   Layout: tabuleiro (esquerda) + painel de controles (direita).
+   ========================================================================== */
+
+.snake-layout {
+  grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.8fr);
+  align-items: start;
+
+  & > * {
+    height: 100%;
+  }
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+
+    & > * {
+      height: auto;
+    }
+  }
+}
+
+/* ---------- Área do jogo ---------- */
+
+.snake-stage {
+  display: grid;
+  gap: 14px;
+}
+
+.game-stage-header {
+  display: grid;
+  grid-template-columns: 0 minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+}
+
+.game-stage-spacer {
+  display: none;
+}
+
+.game-stage-title {
+  justify-self: start;
+  margin: 0 0 8px;
+  font-size: 1.18rem;
+  line-height: 1.1;
+  text-align: left;
+  white-space: nowrap;
+
+  @media (max-width: 760px) {
+    font-size: 1.1rem;
+  }
+}
+
+.game-stage-meta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 18px;
+  min-width: 0;
+
+  @media (max-width: 900px) {
+    justify-content: center;
+  }
+}
+
+.game-stage-scoreboard {
+  display: flex;
+  flex: 0 0 auto;
+  justify-content: flex-end;
+  gap: 10px;
+
+  @media (max-width: 900px) {
+    justify-content: center;
+  }
+}
+
+.game-stage-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 96px;
+  padding: 8px 12px;
+  border: 1px solid rgba(82, 227, 255, 0.32);
+  background: var(--primary-tint);
+  color: var(--primary);
+  font-size: 0.88rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.game-lives {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+  order: -1;
+  min-width: 52px;
+  margin-right: 6px;
+}
+
+.game-life-icon {
+  color: #ff4f6f;
+  font-size: 1.3rem;
+  line-height: 1;
+  filter: drop-shadow(0 2px 6px rgba(255, 79, 111, 0.22));
+
+  &.empty {
+    color: #b8c5d8;
+    filter: none;
+  }
+}
+
+.snake-board-shell {
+  padding: 16px;
+  border: 1px solid var(--border);
+  background: rgba(5, 19, 33, 0.54);
+
+  @media (max-width: 760px) {
+    padding: 12px;
+  }
+}
+
+.snake-board {
+  display: block;
+  width: 100%;
+  max-width: 760px;
+  aspect-ratio: 16 / 9;
+  margin: 0 auto;
+  border: 1px solid rgba(82, 227, 255, 0.54);
+  background: #0c1f30;
+  box-shadow: 0 0 26px -16px var(--primary);
+}
+
+/* ---------- Painel lateral ---------- */
+
+.snake-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.control-section {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Direcional: ↑ em cima, ← ↓ → embaixo */
+.game-pad {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(74px, 92px));
+  justify-content: center;
+  gap: 12px;
+  margin: 0 auto;
+
+  @media (max-width: 760px) {
+    grid-template-columns: repeat(3, minmax(70px, 1fr));
+    width: 100%;
+    max-width: 320px;
+  }
+}
+
+/* Variante de .btn: sobrescreve tamanho e aparência */
+.control-btn {
+  width: 100%;
+  min-height: 74px;
+  padding: 0;
+  border: 1px solid rgba(82, 227, 255, 0.5);
+  background: rgba(82, 227, 255, 0.12);
+  font-size: 1.9rem;
+  font-weight: 800;
+
+  &:hover {
+    background: rgba(82, 227, 255, 0.25);
+  }
+
+  & svg {
+    display: block;
+    width: 48px;
+    height: 48px;
+    overflow: visible;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  & path {
+    fill: none;
+    stroke: #ffffff;
+    stroke-width: 3.25;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  &.up { grid-column: 2; }
+  &.left { grid-column: 1; grid-row: 2; }
+  &.down { grid-column: 2; grid-row: 2; }
+  &.right { grid-column: 3; grid-row: 2; }
+
+  @media (max-width: 760px) {
+    min-height: 68px;
+    font-size: 1.7rem;
+
+    & svg {
+      width: 44px;
+      height: 44px;
+    }
+  }
+}
+
+/* Dica + status do jogo, presos ao rodapé do painel */
+.snake-actions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: auto;
+
+  & .notice {
+    flex: 0 0 auto;
+    padding: 16px 18px;
+  }
+}
+
+.game-inline-tip {
+  color: var(--muted);
+  font-size: 0.96rem;
+  font-weight: 700;
+  text-align: center;
+}

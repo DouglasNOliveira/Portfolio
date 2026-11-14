@@ -1,0 +1,123 @@
+/* ==========================================================================
+   CABEÇALHO (HERO) DAS PÁGINAS
+   ========================================================================== */
+
+.site-header {
+  position: relative;
+  overflow: hidden;
+  min-height: 340px;
+  padding: 34px 16px 124px;
+  color: #fff;
+  background:
+    linear-gradient(90deg, rgba(82, 227, 255, 0.17) 1px, transparent 1px),
+    linear-gradient(rgba(82, 227, 255, 0.14) 1px, transparent 1px),
+    radial-gradient(circle at 12% 0%, rgba(82, 227, 255, 0.28), transparent 30%),
+    linear-gradient(120deg, #06101d 0%, #0a2134 55%, #0a1326 100%);
+  background-size: 72px 72px, 72px 72px, auto, auto;
+  border-bottom: 1px solid rgba(82, 227, 255, 0.36);
+  box-shadow: 0 20px 55px -38px rgba(82, 227, 255, 0.65);
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(180deg, transparent 20%, rgba(5, 13, 23, 0.6) 100%);
+  }
+
+  @media (max-width: 760px) {
+    min-height: 0;
+    padding: 28px 16px 84px;
+  }
+}
+
+.hero {
+  display: grid;
+  gap: 12px;
+  /* Topo (e não centro): o título começa na mesma altura em todas as páginas,
+     mesmo quando o subtítulo tem uma linha a mais ou a menos */
+  align-items: start;
+  width: min(1300px, 100%);
+  min-height: 176px;
+  margin: 0 auto;
+
+  & p {
+    color: rgba(255, 255, 255, 0.86);
+  }
+
+  & .eyebrow {
+    min-height: 20px;
+    margin: 0;
+    font-size: 0.82rem;
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--primary);
+  }
+
+  & h1 {
+    min-height: 68px;
+    margin: 0;
+    font-size: clamp(2.35rem, 5vw, 4.25rem);
+    line-height: 0.98;
+    letter-spacing: -0.065em;
+  }
+
+  & h2 {
+    max-width: 760px;
+    margin: 0;
+    font-size: clamp(1.02rem, 2vw, 1.24rem);
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.84);
+  }
+
+  @media (max-width: 760px) {
+    gap: 10px;
+    min-height: 0;
+
+    & .eyebrow,
+    & h1 {
+      min-height: 0;
+    }
+
+    & h1 {
+      font-size: clamp(2.2rem, 12vw, 3.25rem);
+    }
+
+    & h2 {
+      font-size: 0.98rem;
+      line-height: 1.45;
+    }
+  }
+}
+
+.hero-copy {
+  display: grid;
+  gap: 4px;
+  align-content: start;
+}
+
+/* Efeito de digitação (index.html) */
+.hero-typing-line {
+  min-height: 30px;
+  margin: 0;
+  font-size: 1.04rem;
+  font-weight: 600;
+}
+
+.typed-text {
+  color: var(--primary);
+}
+
+.typed-cursor {
+  display: inline-block;
+  margin-left: 4px;
+  color: var(--primary);
+  animation: typing-cursor 0.9s infinite;
+}
+
+@keyframes typing-cursor {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}

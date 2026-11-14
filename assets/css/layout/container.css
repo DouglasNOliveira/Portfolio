@@ -1,0 +1,15 @@
+/* ==========================================================================
+   CONTAINER PRINCIPAL (sobe sobre o cabeçalho com margem negativa)
+   ========================================================================== */
+
+.container {
+  position: relative;
+  z-index: 2;
+  width: min(1300px, calc(100vw - 40px));
+  margin: -72px auto 0;
+
+  @media (max-width: 760px) {
+    width: min(100%, calc(100vw - 20px));
+    margin-top: -52px;
+  }
+}

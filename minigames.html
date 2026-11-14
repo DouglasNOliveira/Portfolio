@@ -10,11 +10,12 @@
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <link rel="icon" type="image/png" href="assets/favicon.png">
     <link rel="shortcut icon" href="assets/favicon.png" type="image/png">
-    <link rel="stylesheet" href="assets/style.css">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/pages/minigames.css">
     <script src="assets/js/site.js" defer></script>
 </head>
 <body>
-    <header>
+    <header class="site-header">
         <div class="hero">
             <div class="hero-copy">
                 <p class="eyebrow">Arcade</p>
@@ -49,7 +50,7 @@
         </nav>
 
         <section class="grid cols-2 snake-layout">
-            <article class="card snake-stage">
+            <article class="snake-stage">
                 <div class="game-stage-header">
                     <div class="game-stage-spacer" aria-hidden="true"></div>
                     <h3 id="game-title" class="game-stage-title">Snake</h3>
@@ -66,7 +67,7 @@
                 </div>
             </article>
 
-            <aside class="card snake-panel">
+            <aside class="snake-panel">
                 <div class="control-section">
                     <div id="game-pad" class="game-pad" aria-label="Controle direcional">
                         <button class="btn control-btn up" data-pad="up" type="button" aria-label="Mover para cima">
@@ -84,8 +85,8 @@
                     </div>
                 </div>
 
-                <div class="snake-actions snake-actions-panel">
-                    <div class="game-inline-tip game-inline-tip-panel">Use as setas para mover</div>
+                <div class="snake-actions">
+                    <div class="game-inline-tip">Use as setas para mover</div>
                     <div id="game-status" class="notice">Pronto para jogar.</div>
                 </div>
             </aside>

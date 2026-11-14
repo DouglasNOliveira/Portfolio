@@ -9,15 +9,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <link rel="icon" type="image/png" href="assets/favicon.png">
-    <link rel="stylesheet" href="assets/style.css">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/pages/portfolio.css">
     <script src="assets/js/site.js" defer></script>
     <script src="assets/js/portfolio-news-data.js" defer></script>
     <script src="assets/js/portfolio-news.js" defer></script>
 </head>
 <body>
-    <header>
+    <header class="site-header">
         <div class="hero"><div class="hero-copy">
-            <p class="eyebrow">Galeria de Projetos</p>
+            <p class="eyebrow">Galeria de Projetos e Notícias</p>
             <h1>Portfólio</h1>
             <h2>Projetos, dados, pesquisa e desenvolvimento organizados como uma coleção de publicações.</h2>
         </div></div>
@@ -31,7 +32,12 @@
             </div>
         </nav>
         <section class="news-section" aria-labelledby="news-title">
-            <div class="news-section-heading"><p class="eyebrow">Galeria de Projetos</p><h2 id="news-title">Projetos em Destaque</h2></div>
+            <div class="news-section-heading">
+                <!--
+                <p class="eyebrow">Galeria de Projetos e Notícias</p>
+                <h2 id="news-title">Projetos em Destaque</h2>
+                -->
+            </div>
             <div class="news-feed" data-news-feed aria-live="polite"></div>
         </section>
     </main>

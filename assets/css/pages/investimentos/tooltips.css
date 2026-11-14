@@ -1,0 +1,226 @@
+/* ==========================================================================
+   INVESTIMENTOS · TOOLTIPS FLUTUANTES
+   Posicionados pelo JS (position: fixed) e exibidos com .is-visible.
+   ========================================================================== */
+
+/* Base comum aos três tooltips grandes */
+.portfolio-chart-tooltip,
+.position-table-tooltip,
+.fixed-chart-tooltip {
+  position: fixed;
+  z-index: 20;
+  display: none;
+  padding: 16px 18px;
+  border: 1px solid rgba(82, 227, 255, 0.72);
+  color: var(--text);
+  backdrop-filter: blur(12px);
+  pointer-events: none;
+
+  & h4 {
+    margin: 0;
+    color: var(--primary);
+    text-align: center;
+  }
+}
+
+.portfolio-chart-tooltip {
+  width: 380px;
+  min-height: 168px;
+  background: rgba(5, 20, 34, 0.82);
+  box-shadow: 0 18px 35px rgba(0, 0, 0, 0.42), 0 0 24px -12px var(--primary);
+
+  &.is-visible {
+    display: grid;
+    gap: 12px;
+  }
+
+  & h4 {
+    font-size: 1rem;
+  }
+}
+
+.fixed-chart-tooltip {
+  width: 380px;
+  min-height: 170px;
+  background: rgba(5, 20, 34, 0.84);
+  box-shadow: 0 18px 35px rgba(0, 0, 0, 0.42), 0 0 24px -12px var(--primary);
+
+  &.is-visible {
+    display: grid;
+    gap: 12px;
+  }
+
+  & h4 {
+    font-size: 1rem;
+  }
+}
+
+.position-table-tooltip {
+  width: 390px;
+  min-height: 238px;
+  background: rgba(5, 20, 34, 0.88);
+  box-shadow: 0 18px 35px rgba(0, 0, 0, 0.45), 0 0 24px -12px var(--primary);
+
+  &.is-visible {
+    display: grid;
+    gap: 10px;
+  }
+
+  & h4 {
+    font-size: 0.94rem;
+    white-space: nowrap;
+  }
+}
+
+/* ---------- Conteúdo: grade de valores (evolução e renda fixa) ---------- */
+
+.portfolio-tooltip-grid,
+.fixed-tooltip-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 18px;
+}
+
+.portfolio-tooltip-item,
+.fixed-tooltip-item {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+  padding-left: 10px;
+  border-left: 3px solid var(--primary);
+  font-size: 0.76rem;
+
+  & strong,
+  & span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & strong {
+    color: var(--text);
+    font-size: 1rem;
+  }
+
+  & span {
+    color: var(--muted);
+    font-weight: 800;
+  }
+}
+
+/* Cor da barra lateral de cada item */
+.fixed-tooltip-item { border-color: var(--chart-principal); }
+.fixed-tooltip-item.gain { border-color: var(--chart-gain); }
+.fixed-tooltip-item.net { border-color: var(--chart-net); }
+
+.portfolio-tooltip-item.btc {
+  border-color: var(--btc);
+
+  & strong,
+  & span {
+    color: var(--btc);
+  }
+}
+
+/* ---------- Conteúdo: mini gráfico da tabela de posições ---------- */
+
+.position-tooltip-quantity {
+  margin: -4px 0 0;
+  color: #ffcf7b;
+  font-size: 0.72rem;
+  text-align: center;
+
+  & strong {
+    color: var(--btc);
+  }
+}
+
+.position-tooltip-legend {
+  display: flex;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 0.7rem;
+
+  & span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+  }
+
+  & i {
+    width: 12px;
+    height: 3px;
+    background: var(--success);
+  }
+
+  & .quote { background: var(--primary); }
+  & .quote.btc { background: var(--btc); }
+}
+
+.position-tooltip-chart {
+  width: 100%;
+  height: 126px;
+
+  & svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.position-average-line {
+  stroke: var(--success);
+  stroke-width: 2;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.position-price-line {
+  fill: none;
+  stroke: var(--primary);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+
+  &.btc {
+    stroke: var(--btc);
+  }
+}
+
+.position-tooltip-range {
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 0.68rem;
+}
+
+/* ---------- Tooltip do gráfico de cotação ---------- */
+
+.price-chart-tooltip {
+  position: absolute;
+  top: var(--tooltip-y);
+  left: var(--tooltip-x);
+  z-index: 2;
+  display: none;
+  min-width: 122px;
+  padding: 8px 10px;
+  border: 1px solid var(--primary);
+  background: var(--surface-tooltip);
+  color: var(--text);
+  text-align: center;
+  pointer-events: none;
+  transform: translate(-50%, calc(-100% - 12px));
+
+  & strong,
+  & span {
+    display: block;
+  }
+
+  & span {
+    margin-top: 2px;
+    color: var(--muted);
+    font-size: 0.75rem;
+  }
+}

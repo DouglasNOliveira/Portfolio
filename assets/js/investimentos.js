@@ -152,25 +152,125 @@
 
   function renderAllocation(items,fixed) {
     state.allocationMode=state.allocationMode||"type";
-    const mode=state.allocationMode; const titles={ type: "Composição por tipo",fii: "Composição por FII",stock: "Composição por ações",fixed: "Renda fixa por % do CDI" };
+    const mode=state.allocationMode; const titles={ type: "Composição: Tipo",variable: "Composição: Renda Variável",fii: "Composição: FII",stock: "Composição: Ações",crypto: "Composição: Cripto",fixed: "Composição: Renda Fixa" };
     const variable=items.filter((item) => assetClass(item.type)==="variable"); let groups;
-    if(mode==="fii") groups=variable.filter((item) => /fii/i.test(item.type)).map((item) => ({ name: item.ticker,value: item.value }));
-    else if(mode==="stock") groups=variable.filter((item) => /ação|acao/i.test(item.type)).map((item) => ({ name: item.ticker,value: item.value }));
-    else if(mode==="fixed") groups=(fixed?.lots||[]).reduce((all,lot) => { const name=lot.isSavings?"Poupança":`${number.format(lot.cdi*100)}% CDI`; all[name]=all[name]||{ name,value: 0 }; all[name].value+=lot.gross; return all; },{});
-    else groups=Object.values([...items,{ type: "Renda Fixa",value: fixed?.gross||0 }].reduce((all,item) => { all[item.type]=all[item.type]||{ name: item.type,value: 0 }; all[item.type].value+=item.value; return all; },{})).map((group) => ({ ...group,name: group.name==="Criptomoeda"? "Cripto":group.name }));
+    // Chave de estado: "invested" (aplicado) ou "value" (valor atual, padrão)
+    state.allocationMetric=state.allocationMetric||"value"; const invested=state.allocationMetric==="invested";
+    const amount=(item) => invested? item.invested:item.value; const lotAmount=(lot) => invested? lot.principal:lot.gross; const fixedAmount=(invested? fixed?.principal:fixed?.gross)||0;
+    const typeName=(type) => /cripto/i.test(type)? "Cripto":type;
+    if(mode==="variable") groups=variable.reduce((all,item) => { const name=typeName(item.type); all[name]=all[name]||{ name,value: 0 }; all[name].value+=amount(item); return all; },{});
+    else if(mode==="crypto") groups=variable.filter((item) => /cripto/i.test(item.type)).map((item) => ({ name: item.ticker,value: amount(item) }));
+    else if(mode==="fii") groups=variable.filter((item) => /fii/i.test(item.type)).map((item) => ({ name: item.ticker,value: amount(item) }));
+    else if(mode==="stock") groups=variable.filter((item) => /ação|acao/i.test(item.type)).map((item) => ({ name: item.ticker,value: amount(item) }));
+    else if(mode==="fixed") groups=(fixed?.lots||[]).reduce((all,lot) => { const name=lot.isSavings?"Poupança":`${number.format(lot.cdi*100)}% CDI`; all[name]=all[name]||{ name,value: 0 }; all[name].value+=lotAmount(lot); return all; },{});
+    else groups=Object.values([...items.map((item) => ({ type: item.type,value: amount(item) })),{ type: "Renda Fixa",value: fixedAmount }].reduce((all,item) => { all[item.type]=all[item.type]||{ name: item.type,value: 0 }; all[item.type].value+=item.value; return all; },{})).map((group) => ({ ...group,name: group.name==="Criptomoeda"? "Cripto":group.name }));
     groups=Array.isArray(groups)? groups:Object.values(groups); groups.sort((a,b) => b.value-a.value);
     const total=groups.reduce((sum,group) => sum+group.value,0); const colors=["#52e3ff","#a075ff","#6cf6c5","#ffbe5c","#ff718d","#4f8cff","#ec6bdf","#81d56c"]; let offset=0;
     const segments=groups.map((group,index) => { const percentage=total? group.value/total*100:0; const segment=`${colors[index%colors.length]} ${offset}% ${offset+percentage}%`; offset+=percentage; return segment; });
     $("[data-allocation-title]").textContent=titles[mode]; $("[data-allocation]").innerHTML=`<div class="allocation-ring" style="background:conic-gradient(${segments.join(",")||"rgba(82,227,255,.18) 0 100%"})"><span><b>${currency.format(total)}</b><small>100%</small></span><div class="allocation-donut-tooltip" data-donut-tooltip></div></div><div class="allocation-legend">${groups.map((group,index) => { const percentage=total? group.value/total*100:0; const tooltip=`${group.name} · ${currency.format(group.value)} · ${number.format(percentage)}%`; return `<div class="allocation-legend-item" data-tooltip="${escape(tooltip)}" tabindex="0"><i style="background:${colors[index%colors.length]}"></i><span>${escape(group.name)}</span><strong>${number.format(percentage)}%</strong></div>`; }).join("")||'<p class="muted">Sem dados para este recorte.</p>'}</div>`;
-    const ring=$("[data-allocation] .allocation-ring"); const tooltip=ring.querySelector("[data-donut-tooltip]"); const inspect=(event) => { const box=ring.getBoundingClientRect(); const angle=(Math.atan2(event.clientY-box.top-box.height/2,event.clientX-box.left-box.width/2)*180/Math.PI+450)%360; let cursor=0; const group=groups.find((item) => { cursor+=total? item.value/total*360:0; return angle<=cursor; })||groups.at(-1); if(!group) return; const percentage=total? group.value/total*100:0; tooltip.innerHTML=`<strong>${escape(group.name)}</strong><span>${currency.format(group.value)} · ${number.format(percentage)}%</span>`; tooltip.classList.add("is-visible"); }; ring.addEventListener("pointermove",inspect); ring.addEventListener("pointerenter",inspect); ring.addEventListener("pointerleave",() => tooltip.classList.remove("is-visible"));
+    const ring=$("[data-allocation] .allocation-ring"); const tooltip=ring.querySelector("[data-donut-tooltip]");
+    const inspect=(event) => {
+      const box=ring.getBoundingClientRect(); const x=event.clientX-box.left; const y=event.clientY-box.top;
+      // Só mostra sobre o anel: fora do círculo ou no furo central (tamanho vem do ::after do CSS) esconde
+      const distance=Math.hypot(x-box.width/2,y-box.height/2); const outer=box.width/2; const inner=outer-(parseFloat(getComputedStyle(ring,"::after").top)||0);
+      if(!total||distance>outer||distance<inner) { tooltip.classList.remove("is-visible"); return; }
+      const angle=(Math.atan2(y-box.height/2,x-box.width/2)*180/Math.PI+450)%360; let cursor=0;
+      const group=groups.find((item) => { cursor+=item.value/total*360; return angle<=cursor; })||groups.at(-1); if(!group) return;
+      const percentage=group.value/total*100;
+      tooltip.innerHTML=`<strong>${escape(group.name)}</strong><span>${currency.format(group.value)} · ${number.format(percentage)}%</span>`;
+      tooltip.style.setProperty("--tooltip-x",`${x}px`); tooltip.style.setProperty("--tooltip-y",`${y}px`);
+      tooltip.classList.add("is-visible");
+    };
+    ring.addEventListener("pointermove",inspect); ring.addEventListener("pointerenter",inspect); ring.addEventListener("pointerleave",() => tooltip.classList.remove("is-visible"));
+    const metricSwitch=$("[data-allocation-metric]");
+    if(metricSwitch) {
+      metricSwitch.setAttribute("aria-checked",String(!invested)); metricSwitch.querySelector("[data-allocation-metric-label]").textContent=invested? "Aplicado":"Valor atual";
+      metricSwitch.onclick=() => { state.allocationMetric=invested? "value":"invested"; renderAllocation(items,fixed); };
+    }
     document.querySelectorAll("[data-allocation-mode]").forEach((button) => { button.onclick=() => { state.allocationMode=button.dataset.allocationMode; document.querySelectorAll("[data-allocation-mode]").forEach((item) => item.classList.toggle("active",item===button)); renderAllocation(items,fixed); }; });
   }
+  /* ---------- Filtro de anos (slider duplo) dos gráficos de colunas ---------- */
+  const PORTFOLIO_START_YEAR=2024;
+
+  // Monta um slider com duas pontas (ano inicial e final) dentro de host.
+  // value é um objeto { start, end } que o slider altera; onChange é chamado a cada mudança.
+  function yearRangeSlider(host,{ min,max,value,onChange }) {
+    const years=Array.from({ length: max-min+1 },(_,index) => min+index);
+    const percent=(year) => max===min? 0:(year-min)/(max-min)*100;
+    host.innerHTML=`<div class="year-range">
+      <span class="year-range-value" data-year-value></span>
+      <div class="year-range-control">
+        <div class="year-range-slider" data-year-slider>
+          <div class="year-range-track"><div class="year-range-fill" data-year-fill></div></div>
+          <button type="button" class="year-range-thumb is-start" role="slider" aria-label="Ano inicial" data-year-thumb="start"></button>
+          <button type="button" class="year-range-thumb is-end" role="slider" aria-label="Ano final" data-year-thumb="end"></button>
+        </div>
+        <div class="year-range-ticks">${years.map((year) => `<span data-year-tick="${year}" style="left:${percent(year)}%">${year}</span>`).join("")}</div>
+      </div>
+    </div>`;
+    const slider=host.querySelector("[data-year-slider]"); const fill=host.querySelector("[data-year-fill]"); const output=host.querySelector("[data-year-value]");
+    const thumbs={ start: host.querySelector('[data-year-thumb="start"]'),end: host.querySelector('[data-year-thumb="end"]') };
+    const update=() => {
+      thumbs.start.style.left=`${percent(value.start)}%`; thumbs.end.style.left=`${percent(value.end)}%`;
+      fill.style.left=`${percent(value.start)}%`; fill.style.width=`${percent(value.end)-percent(value.start)}%`;
+      output.textContent=value.start===value.end? String(value.start):`${value.start} – ${value.end}`;
+      for(const [key,thumb] of Object.entries(thumbs)) { thumb.setAttribute("aria-valuemin",key==="start"? min:value.start); thumb.setAttribute("aria-valuemax",key==="start"? value.end:max); thumb.setAttribute("aria-valuenow",value[key]); }
+      host.querySelectorAll("[data-year-tick]").forEach((tick) => { const year=Number(tick.dataset.yearTick); tick.classList.toggle("is-active",year>=value.start&&year<=value.end); });
+    };
+    // As pontas nunca se cruzam: o início fica <= fim
+    const move=(key,year) => {
+      const next=key==="start"? Math.min(Math.max(year,min),value.end):Math.max(Math.min(year,max),value.start);
+      if(next===value[key]) return;
+      value[key]=next; update(); onChange();
+    };
+    const yearAt=(clientX) => { const box=slider.getBoundingClientRect(); const ratio=Math.max(0,Math.min(1,(clientX-box.left)/box.width)); return Math.round(min+ratio*(max-min)); };
+    let drag=null;
+    slider.addEventListener("pointerdown",(event) => {
+      if(max===min) return;
+      event.preventDefault(); slider.setPointerCapture(event.pointerId);
+      const year=yearAt(event.clientX); const toStart=Math.abs(year-value.start); const toEnd=Math.abs(year-value.end);
+      // Com as pontas na mesma distância (ou sobrepostas), a direção do arrasto decide qual se move
+      const key=toStart<toEnd? "start":toEnd<toStart? "end":null;
+      drag={ key,originX: event.clientX };
+      if(key) { thumbs[key].focus({ preventScroll: true }); move(key,year); }
+    });
+    slider.addEventListener("pointermove",(event) => {
+      if(!drag) return;
+      if(!drag.key) { if(Math.abs(event.clientX-drag.originX)<4) return; drag.key=event.clientX<drag.originX? "start":"end"; thumbs[drag.key].focus({ preventScroll: true }); }
+      move(drag.key,yearAt(event.clientX));
+    });
+    const stop=() => { drag=null; }; slider.addEventListener("pointerup",stop); slider.addEventListener("pointercancel",stop);
+    for(const [key,thumb] of Object.entries(thumbs)) thumb.addEventListener("keydown",(event) => {
+      const step={ ArrowLeft: -1,ArrowDown: -1,ArrowRight: 1,ArrowUp: 1 }[event.key];
+      if(step) move(key,value[key]+step); else if(event.key==="Home") move(key,min); else if(event.key==="End") move(key,max); else return;
+      event.preventDefault();
+    });
+    update();
+  }
+
+  // Liga o slider do gráfico `key` ("variable" ou "fixed") à função de desenho.
+  // draw recebe um filtro (item) => boolean para os meses dentro do intervalo escolhido.
+  function renderYearFilter(key,draw) {
+    const min=PORTFOLIO_START_YEAR; const max=Math.max(min,new Date().getFullYear());
+    state.yearRange=state.yearRange||{};
+    const saved=state.yearRange[key]||{ start: min,end: max };
+    const value={ start: Math.min(Math.max(saved.start,min),max),end: Math.min(Math.max(saved.end,min),max) };
+    state.yearRange[key]=value;
+    const apply=() => draw((item) => { const year=item.date.getFullYear(); return year>=value.start&&year<=value.end; });
+    const host=$(`[data-year-filter="${key}"]`); if(host) yearRangeSlider(host,{ min,max,value,onChange: apply });
+    apply();
+  }
+
   function renderFixedHistory() {
     const host=$("[data-fixed-history-chart]"); const indicatorDates=(state.data.indicadores||[]).map((row) => toDate(row.data)).filter(Boolean).sort((a,b) => a-b); const applicationDates=(state.data.aplicacoes||[]).map((row) => toDate(row.data)).filter(Boolean).sort((a,b) => a-b);
     if(!indicatorDates.length||!applicationDates.length) { host.innerHTML='<p class="muted">Sem histórico disponível.</p>'; return; }
     const monthlyRates=indicatorDates.reduce((all,item) => { all[`${item.getFullYear()}-${item.getMonth()}`]=item; return all; },{}); const monthDates=[]; const first=applicationDates[0]; const latest=indicatorDates.at(-1); const cursor=new Date(first.getFullYear(),first.getMonth(),1);
     while(cursor<=latest) { const key=`${cursor.getFullYear()}-${cursor.getMonth()}`; const fallback=new Date(cursor.getFullYear(),cursor.getMonth()+1,0); monthDates.push(monthlyRates[key]||(fallback>latest? latest:fallback)); cursor.setMonth(cursor.getMonth()+1); }
-    const values=monthDates.map((dateValue) => { const model=fixedModel(dateValue); const ir=model.lots.reduce((sum,lot) => sum+lot.tax,0); const iof=model.lots.reduce((sum,lot) => sum+lot.iof,0); return { date: dateValue,principal: model.principal,gross: model.gross,net: model.net,ir,iof,grossGain: model.gross-model.principal,netGain: model.net-model.principal }; });
+    const allValues=monthDates.map((dateValue) => { const model=fixedModel(dateValue); const ir=model.lots.reduce((sum,lot) => sum+lot.tax,0); const iof=model.lots.reduce((sum,lot) => sum+lot.iof,0); return { date: dateValue,principal: model.principal,gross: model.gross,net: model.net,ir,iof,grossGain: model.gross-model.principal,netGain: model.net-model.principal }; });
+    renderYearFilter("fixed",(inRange) => drawFixedHistory(host,allValues.filter(inRange)));
+  }
+  function drawFixedHistory(host,values) {
+    if(!values.length) { host.innerHTML='<p class="muted">Sem dados para o período selecionado.</p>'; return; }
     const compact=window.matchMedia("(max-width: 760px)").matches; const width=1200; const height=compact? 620:410; const left=65; const right=65; const top=30; const bottom=56; const innerHeight=height-top-bottom; const step=(width-left-right)/values.length; const barWidth=Math.max(4,step*.32); const maxBalance=Math.ceil(Math.max(...values.map((item) => item.gross),1)/1000)*1000; const maxGain=Math.ceil(Math.max(...values.flatMap((item) => [item.grossGain,item.netGain]),1)/100)*100; const yBalance=(value) => top+innerHeight-value/maxBalance*innerHeight; const yGain=(value) => top+innerHeight-value/maxGain*innerHeight; const x=(index) => left+step*index+step/2; const yLine=(item,gain) => Math.max(yBalance(item.gross),Math.min(top+innerHeight,yGain(gain))); const smoothPath=(field,reverse=false) => { const entries=reverse? values.slice().reverse():values; const points=entries.map((item,index) => ({ x: x(reverse? values.length-1-index:index),y: yLine(item,item[field]) })); if(points.length===1) return `M${points[0].x},${points[0].y}`; let path=`M${points[0].x},${points[0].y}`; for(let index=1;index<points.length-1;index+=1) { const next=points[index+1]; path+=` Q${points[index].x},${points[index].y} ${(points[index].x+next.x)/2},${(points[index].y+next.y)/2}`; } return `${path} L${points.at(-1).x},${points.at(-1).y}`; };
     const grid=[0,.25,.5,.75,1].map((ratio) => { const y=top+innerHeight*ratio; const balance=maxBalance*(1-ratio); const gain=maxGain*(1-ratio); return `<line x1="${left}" x2="${width-right}" y1="${y}" y2="${y}" class="fixed-grid-line"></line><text x="4" y="${y+4}" class="fixed-axis-value">${currency.format(balance).replace(",00","")}</text><text x="${width-right+10}" y="${y+4}" class="fixed-axis-gain">${currency.format(gain).replace(",00","")}</text>`; }).join(""); const bars=values.map((item,index) => { const label=item.date.toLocaleDateString("pt-BR",{ month: "short" }).replace(".",""); return `<g><rect class="fixed-principal-bar" x="${x(index)-barWidth-2}" y="${yBalance(item.principal)}" width="${barWidth}" height="${top+innerHeight-yBalance(item.principal)}"></rect><rect class="fixed-gross-bar" x="${x(index)+2}" y="${yBalance(item.gross)}" width="${barWidth}" height="${top+innerHeight-yBalance(item.gross)}"></rect><text x="${x(index)}" y="${height-24}" class="fixed-axis-label">${label}</text></g>`; }).join("");
     host.innerHTML=`<div class="fixed-chart-legend"><span><i class="legend-principal"></i>Principal investido</span><span><i class="legend-gross"></i>Saldo bruto</span><span><i class="legend-gross-gain"></i>Valorização bruta</span><span><i class="legend-net-gain"></i>Valorização líquida</span></div><div class="fixed-combo-chart"><svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Evolução completa da renda fixa">${grid}${bars}<path class="fixed-gross-line" d="${smoothPath("grossGain")}"></path><path class="fixed-net-line" d="${smoothPath("netGain")}"></path><rect class="fixed-chart-hit-area" data-fixed-chart-hit x="${left}" y="${top}" width="${width-left-right}" height="${innerHeight}"></rect></svg><div class="fixed-chart-tooltip" data-fixed-chart-tooltip></div></div><div class="chart-range"><span>${date.format(values[0].date)}</span><strong>${currency.format(values.at(-1).gross)}</strong><span>${date.format(values.at(-1).date)}</span></div>`;
@@ -206,8 +306,12 @@
     const host=$("[data-portfolio-evolution-chart]"); if(!host) return;
     const rows=state.data.compraVenda||[]; const rawPrices=priceSeries(); const dates=[...rows.map((row) => toDate(row.data||row.dt_movimento)),...(state.data.movimentos||[]).map((row) => toDate(row.data||row.dt_movimento)),...rawPrices.map((row) => row.date)].filter(Boolean).sort((a,b) => a-b);
     const months=Object.values(dates.reduce((all,item) => { all[`${item.getFullYear()}-${item.getMonth()}`]=new Date(item.getFullYear(),item.getMonth()+1,0); return all; },{}));
-    const data=months.map((month) => { const active=rows.filter((row) => { const when=toDate(row.data||row.dt_movimento); return when&&when<=month; }); const holdings=active.reduce((all,row) => { if(row.ticker) all[row.ticker]=(all[row.ticker]||0)+toNumber(row.qtde); return all; },{}); const value=Object.entries(holdings).reduce((sum,[ticker,quantity]) => { const quote=rawPrices.filter((row) => row.ticker===ticker&&row.date<=month).sort((a,b) => b.date-a.date)[0]?.fechamento||0; return sum+quantity*quote; },0); const invested=rows.filter((row) => { const when=toDate(row.data||row.dt_movimento); return when&&when.getFullYear()===month.getFullYear()&&when.getMonth()===month.getMonth(); }).reduce((sum,row) => sum+toNumber(row.valor),0); const dividends=(state.data.movimentos||[]).filter((row) => { const when=toDate(row.data||row.dt_movimento); return when&&when.getFullYear()===month.getFullYear()&&when.getMonth()===month.getMonth()&&/dividendo|jcp|provento/i.test(String(row.provento||row.tp_movimento||"")); }).reduce((sum,row) => sum+toNumber(row.valor),0); return { date: month,value,dividends,invested,assets: Math.floor(Object.values(holdings).reduce((sum,quantity) => sum+quantity,0)),bitcoin: holdings.BTC||0 }; }).filter((item) => item.value||item.dividends);
-    if(!data.length) { host.innerHTML='<p class="muted">Sem histórico suficiente para o gráfico.</p>'; return; }
+    const allData=months.map((month) => { const active=rows.filter((row) => { const when=toDate(row.data||row.dt_movimento); return when&&when<=month; }); const holdings=active.reduce((all,row) => { if(row.ticker) all[row.ticker]=(all[row.ticker]||0)+toNumber(row.qtde); return all; },{}); const value=Object.entries(holdings).reduce((sum,[ticker,quantity]) => { const quote=rawPrices.filter((row) => row.ticker===ticker&&row.date<=month).sort((a,b) => b.date-a.date)[0]?.fechamento||0; return sum+quantity*quote; },0); const invested=rows.filter((row) => { const when=toDate(row.data||row.dt_movimento); return when&&when.getFullYear()===month.getFullYear()&&when.getMonth()===month.getMonth(); }).reduce((sum,row) => sum+toNumber(row.valor),0); const dividends=(state.data.movimentos||[]).filter((row) => { const when=toDate(row.data||row.dt_movimento); return when&&when.getFullYear()===month.getFullYear()&&when.getMonth()===month.getMonth()&&/dividendo|jcp|provento/i.test(String(row.provento||row.tp_movimento||"")); }).reduce((sum,row) => sum+toNumber(row.valor),0); return { date: month,value,dividends,invested,assets: Math.floor(Object.values(holdings).reduce((sum,quantity) => sum+quantity,0)),bitcoin: holdings.BTC||0 }; }).filter((item) => item.value||item.dividends);
+    if(!allData.length) { host.innerHTML='<p class="muted">Sem histórico suficiente para o gráfico.</p>'; return; }
+    renderYearFilter("variable",(inRange) => drawPortfolioEvolution(host,allData.filter(inRange)));
+  }
+  function drawPortfolioEvolution(host,data) {
+    if(!data.length) { host.innerHTML='<p class="muted">Sem dados para o período selecionado.</p>'; return; }
     const compact=window.matchMedia("(max-width: 760px)").matches; const width=1200; const height=compact? 500:310; const left=50; const right=52; const top=26; const bottom=50; const chartHeight=height-top-bottom; const maxValue=Math.max(...data.map((item) => item.value),1); const maxDividends=Math.max(...data.map((item) => item.dividends),1); const step=(width-left-right)/data.length; const bar=Math.max(5,step*.58); const x=(index) => left+index*step+step/2; const yValue=(value) => top+chartHeight-value/maxValue*chartHeight; const yDividends=(value) => top+chartHeight-value/maxDividends*chartHeight; const line=data.map((item,index) => `${index? "L":"M"}${x(index)},${yDividends(item.dividends)}`).join(" "); const grid=[0,.5,1].map((ratio) => `<line class="fixed-grid-line" x1="${left}" x2="${width-right}" y1="${top+chartHeight*ratio}" y2="${top+chartHeight*ratio}"></line>`).join(""); const bars=data.map((item,index) => `<g><rect class="portfolio-value-bar" x="${x(index)-bar/2}" y="${yValue(item.value)}" width="${bar}" height="${top+chartHeight-yValue(item.value)}"></rect><text class="fixed-axis-label" x="${x(index)}" y="${height-24}">${item.date.toLocaleDateString("pt-BR",{ month: "short" }).replace(".","")}</text></g>`).join("");
     host.innerHTML=`<div class="portfolio-chart-legend"><span><i></i>Posição</span><span><i></i>Proventos</span></div><div class="portfolio-chart-canvas"><svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Evolução mensal de patrimônio e proventos">${grid}${bars}<path class="portfolio-dividends-line" d="${line}"></path><rect class="portfolio-chart-hit-area" data-portfolio-chart-hit x="${left}" y="${top}" width="${width-left-right}" height="${chartHeight}"></rect></svg><div class="portfolio-chart-tooltip" data-portfolio-chart-tooltip></div></div><div class="chart-range"><span>${date.format(data[0].date)}</span><strong>${currency.format(data.at(-1).value)}</strong><span>${date.format(data.at(-1).date)}</span></div>`;
     const currentVariablePosition=positions().filter((item) => assetClass(item.type)==="variable").reduce((sum,item) => sum+item.value,0); const badge=host.querySelector(".chart-range"); badge.className="portfolio-current-badge"; badge.innerHTML=`<span>Posição atual</span><strong>${currency.format(currentVariablePosition)}</strong>`;

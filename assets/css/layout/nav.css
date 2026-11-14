@@ -1,0 +1,225 @@
+/* ==========================================================================
+   NAVEGAÇÃO PRINCIPAL (abas + submenu de Mini Games)
+   No mobile (≤760px) vira um menu hambúrguer controlado por site.js,
+   que alterna a classe .is-open em .tabs e .tab-dropdown.
+   ========================================================================== */
+
+.site-nav {
+  position: relative;
+  z-index: 40;
+  margin-bottom: 32px;
+
+  @media (max-width: 760px) {
+    overflow-x: auto;
+  }
+}
+
+/* Espaço entre o menu e o primeiro bloco de conteúdo */
+.site-nav + section,
+.site-nav + .grid,
+.site-nav + .card {
+  margin-top: 42px;
+}
+
+/* Botão hambúrguer (só aparece no mobile) */
+.nav-toggle {
+  display: none;
+  width: 52px;
+  height: 52px;
+  margin-left: auto;
+  margin-bottom: 12px;
+  padding: 0;
+  border: 1px solid var(--border);
+  background: rgba(7, 20, 34, 0.84);
+  cursor: pointer;
+
+  & span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    margin: 4px auto;
+    background: var(--primary);
+  }
+
+  @media (max-width: 760px) {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.tabs {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  width: fit-content;
+  max-width: 100%;
+  padding: 6px;
+  border: 1px solid var(--border);
+  background: rgba(8, 23, 38, 0.66);
+  backdrop-filter: blur(16px);
+
+  @media (max-width: 760px) {
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    min-width: max-content;
+    background: rgba(7, 20, 34, 0.92);
+
+    &.is-open {
+      display: flex;
+    }
+  }
+}
+
+.tab-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #b9cfdf;
+  font-size: 0.97rem;
+  font-weight: 700;
+  text-align: center;
+  transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    color: var(--primary);
+    background: var(--primary-tint);
+    border-color: rgba(82, 227, 255, 0.25);
+  }
+
+  &.active {
+    color: var(--ink);
+    background: var(--primary);
+    border-color: var(--primary);
+    box-shadow: 0 0 20px -6px var(--primary);
+  }
+
+  @media (max-width: 760px) {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+/* Submenu (Mini Games) */
+.tab-dropdown {
+  position: relative;
+
+  &:hover .dropdown-menu,
+  &:focus-within .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 760px) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 8px;
+
+    & > .tab-link {
+      width: auto;
+      min-width: 0;
+    }
+
+    /* Mesmo visual da aba ativa */
+    &.is-open .dropdown-toggle {
+      color: var(--ink);
+      background: var(--primary);
+      border-color: var(--primary);
+      box-shadow: 0 0 20px -6px var(--primary);
+    }
+
+    &.is-open .dropdown-menu {
+      display: grid;
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+}
+
+/* Botão "+" que abre o submenu no mobile */
+.dropdown-toggle {
+  display: none;
+  width: 46px;
+  min-width: 46px;
+  min-height: 42px;
+  padding: 0;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #b9cfdf;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    color: var(--primary);
+    background: var(--primary-tint);
+    border-color: rgba(82, 227, 255, 0.25);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(82, 227, 255, 0.12);
+  }
+
+  @media (max-width: 760px) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 50;
+  display: grid;
+  gap: 6px;
+  min-width: 100%;
+  padding: 8px;
+  border: 1px solid var(--border);
+  background: rgba(7, 20, 34, 0.96);
+  box-shadow: var(--shadow);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;
+
+  @media (max-width: 760px) {
+    position: static;
+    grid-column: 1 / -1;
+    display: none;
+    min-width: 0;
+    padding: 0;
+    border: none;
+    transform: none;
+  }
+}
+
+.dropdown-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 10px 12px;
+  color: #b9cfdf;
+  font-weight: 700;
+
+  &:hover {
+    color: var(--primary);
+    background: var(--primary-tint);
+  }
+}
