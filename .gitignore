@@ -1,0 +1,14 @@
+# Logs (ex.: debug.log gerado pelo Chrome/Crashpad)
+*.log
+
+# Sistema operacional / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Variáveis de ambiente e chaves locais
+.env
+.env.*
+
+# Dependências
+node_modules/

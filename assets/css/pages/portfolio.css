@@ -121,6 +121,14 @@
   padding-top: 24px;
 }
 
+/* Links externos do card (um ou mais), alinhados à direita */
+.news-direct-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px 16px;
+}
+
 /* Variante de .text-button */
 .news-direct-link {
   color: var(--muted);
@@ -210,9 +218,13 @@
   color: var(--muted);
   font-size: 0.9rem;
 
-  & .btn {
-    margin-top: 18px;
-  }
+}
+
+.news-dialog-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
 }
 
 /* ---------- Galeria / carrossel do modal ---------- */

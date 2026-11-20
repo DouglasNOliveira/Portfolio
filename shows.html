@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shows | Portfólio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" integrity="sha384-42kyIPf7HDYLkGffmxDhSx/3Z/53wGBs3nD6wEFxsbeDc7rMO6mkYbkAcpRsnMU2" crossorigin="anonymous">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/pages/shows.css">
+  <script src="assets/js/site.js" defer></script>
+  <script src="assets/js/shows.js" defer></script>
+</head>
+<body>
+  <header class="site-header"><div class="hero"><div class="hero-copy"><p class="eyebrow">DASHBOARD WEB - SETLIST.FM</p><h1>Shows</h1><h2>Os shows que já assisti, com dados do setlist.fm coletados por Apps Script e publicados em Google Sheets.</h2></div></div></header>
+  <main class="container">
+    <nav class="site-nav" aria-label="Navegação principal">
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Abrir navegação" data-nav-toggle><span></span><span></span><span></span></button>
+      <div class="tabs" data-nav-menu>
+        <a class="tab-link" href="index.html">Sobre Mim</a><a class="tab-link" href="portfolio.html">Portfólio</a><a class="tab-link" href="investimentos.html">Investimentos</a><a class="tab-link active" href="shows.html">Shows</a><a class="tab-link" href="contato.html">Contato</a>
+        <div class="tab-dropdown" data-dropdown><a class="tab-link" href="minigames.html">Mini Games</a><button class="dropdown-toggle" type="button" aria-expanded="false" aria-label="Abrir submenu de Mini Games" data-dropdown-toggle>+</button><div class="dropdown-menu"><a class="dropdown-link" href="minigames.html">Snake</a><a class="dropdown-link" href="minigames.html?game=pong">Pong</a><a class="dropdown-link" href="minigames.html?game=arkanoid">Arkanoid</a></div></div>
+      </div>
+    </nav>
+
+    <section class="html-dashboard shows-dashboard" aria-label="Dashboard de shows">
+      <div class="dashboard-meta">
+        <div class="shows-filters" role="group" aria-label="Filtros do dashboard">
+          <label><span>Ano</span><select class="dashboard-select" data-filter="year"><option value="all">Todos os anos</option></select></label>
+          <label><span>Artista</span><select class="dashboard-select" data-filter="artist"><option value="all">Todos os artistas</option></select></label>
+          <label><span>Cidade</span><select class="dashboard-select" data-filter="city"><option value="all">Todas as cidades</option></select></label>
+          <label><span>Local</span><select class="dashboard-select" data-filter="venue"><option value="all">Todos os locais</option></select></label>
+          <button class="text-button shows-filters-clear" type="button" data-filters-clear hidden><i class="bx bx-x" aria-hidden="true"></i> Limpar filtros</button>
+        </div>
+        <div class="dashboard-status" data-dashboard-status><i class="bx bx-loader-alt"></i> Carregando shows…</div>
+      </div>
+
+      <div class="dashboard-kpis" data-shows-kpis></div>
+
+      <div class="shows-grid">
+        <section class="dashboard-panel shows-panel-years">
+          <div class="panel-heading"><div><p class="panel-label">Linha do tempo</p><h3>Shows por Ano</h3></div><span class="panel-note">Clique em um ano para filtrar</span></div>
+          <div class="shows-years-chart" data-years-chart></div>
+        </section>
+        <section class="dashboard-panel shows-panel-artists">
+          <div class="panel-heading"><div><p class="panel-label">Artistas</p><h3>Mais Vistos ao Vivo</h3></div></div>
+          <div data-artists-ranking></div>
+        </section>
+        <section class="dashboard-panel shows-panel-places">
+          <div class="panel-heading"><div><p class="panel-label">Locais</p><h3 data-places-title>Por Casa de Show</h3></div>
+            <div class="shows-toggle" role="group" aria-label="Agrupar locais por"><button type="button" class="shows-toggle-button active" aria-pressed="true" data-place-mode="venue">Local</button><button type="button" class="shows-toggle-button" aria-pressed="false" data-place-mode="city">Cidade</button><button type="button" class="shows-toggle-button" aria-pressed="false" data-place-mode="country">País</button></div>
+          </div>
+          <div data-places-ranking></div>
+        </section>
+        <section class="dashboard-panel shows-panel-songs">
+          <div class="panel-heading"><div><p class="panel-label">Músicas</p><h3>Mais Ouvidas ao Vivo</h3></div></div>
+          <div data-songs-ranking></div>
+        </section>
+      </div>
+
+      <div class="shows-albums-grid">
+        <section class="dashboard-panel shows-panel-album-wall">
+          <div class="panel-heading"><div><p class="panel-label">Álbuns</p><h3>Discos Mais Tocados ao Vivo</h3></div><span class="panel-note">Músicas ouvidas pelo álbum de origem</span></div>
+          <div data-album-wall></div>
+        </section>
+        <section class="dashboard-panel shows-panel-album-donut">
+          <div class="panel-heading"><div><p class="panel-label">Discografia ao vivo</p><h3>Músicas por Álbum</h3></div>
+            <select class="dashboard-select shows-album-select" data-album-artist aria-label="Escolher artista"></select>
+          </div>
+          <div data-album-donut></div>
+        </section>
+      </div>
+
+      <section class="dashboard-panel shows-panel-history">
+        <div class="panel-heading">
+          <div><p class="panel-label">Histórico</p><h3>Todos os Shows</h3></div>
+          <div class="shows-history-tools"><span class="panel-note" data-history-count></span><input class="dashboard-select shows-search" type="search" placeholder="Buscar artista, local, cidade…" aria-label="Buscar no histórico" data-history-search></div>
+        </div>
+        <div class="dashboard-table-wrap shows-table-wrap">
+          <table class="dashboard-table shows-table">
+            <thead><tr><th><button type="button" data-history-sort="date">Data</button></th><th><button type="button" data-history-sort="artist">Artista</button></th><th><button type="button" data-history-sort="venue">Local</button></th><th><button type="button" data-history-sort="city">Cidade</button></th><th><button type="button" data-history-sort="tour">Turnê</button></th><th><button type="button" data-history-sort="songs">Músicas</button></th><th><span class="visually-hidden">Setlist</span></th></tr></thead>
+            <tbody data-history-table></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="dashboard-sources"><div><p class="panel-label">Fonte dos dados</p><p>Setlists por <a href="https://www.setlist.fm/user/doug_nsc" target="_blank" rel="noopener">setlist.fm</a> · usuário doug_nsc</p></div><button class="text-button" type="button" data-dashboard-reload>Atualizar dados</button></section>
+      <button class="back-to-top" type="button" data-back-to-top aria-label="Voltar ao topo"><i class="bx bx-up-arrow-alt" aria-hidden="true"></i></button>
+    </section>
+  </main>
+  <footer class="footer">2026 - Portfólio de Douglas Nascimento de Oliveira</footer>
+</body>
+</html>

@@ -18,3 +18,16 @@
   padding-left: 18px;
   color: var(--muted);
 }
+
+/* Esconde visualmente, mas mantém o texto para leitores de tela */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}

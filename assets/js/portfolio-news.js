@@ -42,8 +42,20 @@
     const copy = document.createElement("div"); copy.className = "news-dialog-copy";
     news.body.forEach((paragraph) => copy.append(textElement("p", paragraph)));
     const footer = document.createElement("footer"); footer.className = "news-dialog-footer";
-    const link = document.createElement("a"); link.className = "btn"; link.href = news.link; link.target = "_blank"; link.rel = "noreferrer"; link.textContent = news.linkLabel; footer.replaceChildren(link);
+    const links = document.createElement("div"); links.className = "news-dialog-links";
+    newsLinks(news).forEach(({ href, label }) => links.append(externalLink(href, label, "btn")));
+    footer.replaceChildren(links);
     content.append(gallery, header, copy, footer); dialog.showModal();
+  }
+
+  // Link principal (link/linkLabel) + links extras opcionais (extraLinks: [{ href, label }])
+  function newsLinks(news) {
+    return [{ href: news.link, label: news.linkLabel }, ...(news.extraLinks || [])];
+  }
+
+  function externalLink(href, label, className) {
+    const link = document.createElement("a"); link.className = className; link.href = href; link.target = "_blank"; link.rel = "noreferrer"; link.textContent = label;
+    return link;
   }
 
   [...window.portfolioNews].sort((first, second) => second.publishedOn.localeCompare(first.publishedOn)).forEach((news, index) => {
@@ -56,7 +68,8 @@
     const badge = textElement("span", news.category, "badge success");
     const time = textElement("time", formatDate(news.publishedOn)); time.dateTime = news.publishedOn; meta.append(badge, time);
     const read = textElement("button", "Ler notícia", "text-button"); read.type = "button"; read.addEventListener("click", () => openNews(news));
-    const direct = document.createElement("a"); direct.className = "text-button news-direct-link"; direct.href = news.link; direct.target = "_blank"; direct.rel = "noreferrer"; direct.textContent = news.linkLabel;
+    const direct = document.createElement("div"); direct.className = "news-direct-links";
+    newsLinks(news).forEach(({ href, label }) => direct.append(externalLink(href, label, "text-button news-direct-link")));
     const actions = document.createElement("div"); actions.className = "news-card-actions"; actions.append(read, direct);
     content.append(meta, textElement("h2", news.title), textElement("p", news.summary), actions); card.append(image, content); feed.append(card);
   });

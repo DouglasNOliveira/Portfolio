@@ -156,7 +156,9 @@
     const variable=items.filter((item) => assetClass(item.type)==="variable"); let groups;
     // Chave de estado: "invested" (aplicado) ou "value" (valor atual, padrão)
     state.allocationMetric=state.allocationMetric||"value"; const invested=state.allocationMetric==="invested";
-    const amount=(item) => invested? item.invested:item.value; const lotAmount=(lot) => invested? lot.principal:lot.gross; const fixedAmount=(invested? fixed?.principal:fixed?.gross)||0;
+    const amount=(item) => invested? item.invested:item.value; // Na visão Renda Fixa com valor atual, o slide alterna saldo bruto (padrão) e líquido (após IR/IOF)
+    state.allocationFixedBalance=state.allocationFixedBalance||"gross"; const fixedNet=!invested&&state.allocationFixedBalance==="net";
+    const lotAmount=(lot) => invested? lot.principal:fixedNet? lot.net:lot.gross; const fixedAmount=(invested? fixed?.principal:fixed?.gross)||0;
     const typeName=(type) => /cripto/i.test(type)? "Cripto":type;
     if(mode==="variable") groups=variable.reduce((all,item) => { const name=typeName(item.type); all[name]=all[name]||{ name,value: 0 }; all[name].value+=amount(item); return all; },{});
     else if(mode==="crypto") groups=variable.filter((item) => /cripto/i.test(item.type)).map((item) => ({ name: item.ticker,value: amount(item) }));
@@ -167,7 +169,7 @@
     groups=Array.isArray(groups)? groups:Object.values(groups); groups.sort((a,b) => b.value-a.value);
     const total=groups.reduce((sum,group) => sum+group.value,0); const colors=["#52e3ff","#a075ff","#6cf6c5","#ffbe5c","#ff718d","#4f8cff","#ec6bdf","#81d56c"]; let offset=0;
     const segments=groups.map((group,index) => { const percentage=total? group.value/total*100:0; const segment=`${colors[index%colors.length]} ${offset}% ${offset+percentage}%`; offset+=percentage; return segment; });
-    $("[data-allocation-title]").textContent=titles[mode]; $("[data-allocation]").innerHTML=`<div class="allocation-ring" style="background:conic-gradient(${segments.join(",")||"rgba(82,227,255,.18) 0 100%"})"><span><b>${currency.format(total)}</b><small>100%</small></span><div class="allocation-donut-tooltip" data-donut-tooltip></div></div><div class="allocation-legend">${groups.map((group,index) => { const percentage=total? group.value/total*100:0; const tooltip=`${group.name} · ${currency.format(group.value)} · ${number.format(percentage)}%`; return `<div class="allocation-legend-item" data-tooltip="${escape(tooltip)}" tabindex="0"><i style="background:${colors[index%colors.length]}"></i><span>${escape(group.name)}</span><strong>${number.format(percentage)}%</strong></div>`; }).join("")||'<p class="muted">Sem dados para este recorte.</p>'}</div>`;
+    $("[data-allocation-title]").textContent=titles[mode]; $("[data-allocation]").innerHTML=`<div class="allocation-ring" style="background:conic-gradient(${segments.join(",")||"rgba(82,227,255,.18) 0 100%"})"><span><b>${currency.format(total)}</b><small>100%</small></span><div class="allocation-donut-tooltip" data-donut-tooltip></div></div><div class="allocation-legend">${mode==="fixed"? `<button class="state-switch allocation-balance-switch" type="button" role="switch" aria-checked="${!fixedNet}" aria-label="Alternar saldo da renda fixa entre bruto e líquido" data-allocation-fixed-balance${invested? ' disabled title="Disponível com Valor atual"':""}><span class="state-switch-label">${fixedNet? "Val. Líquida":"Val. Bruta"}</span><span class="state-switch-track" aria-hidden="true"><span class="state-switch-thumb"></span></span></button>`:""}${groups.map((group,index) => { const percentage=total? group.value/total*100:0; const tooltip=`${group.name} · ${currency.format(group.value)} · ${number.format(percentage)}%`; return `<div class="allocation-legend-item" data-tooltip="${escape(tooltip)}" tabindex="0"><i style="background:${colors[index%colors.length]}"></i><span>${escape(group.name)}</span><strong>${number.format(percentage)}%</strong></div>`; }).join("")||'<p class="muted">Sem dados para este recorte.</p>'}</div>`;
     const ring=$("[data-allocation] .allocation-ring"); const tooltip=ring.querySelector("[data-donut-tooltip]");
     const inspect=(event) => {
       const box=ring.getBoundingClientRect(); const x=event.clientX-box.left; const y=event.clientY-box.top;
@@ -182,6 +184,8 @@
       tooltip.classList.add("is-visible");
     };
     ring.addEventListener("pointermove",inspect); ring.addEventListener("pointerenter",inspect); ring.addEventListener("pointerleave",() => tooltip.classList.remove("is-visible"));
+    const balanceSwitch=$("[data-allocation-fixed-balance]");
+    if(balanceSwitch) balanceSwitch.onclick=() => { state.allocationFixedBalance=fixedNet? "gross":"net"; renderAllocation(items,fixed); };
     const metricSwitch=$("[data-allocation-metric]");
     if(metricSwitch) {
       metricSwitch.setAttribute("aria-checked",String(!invested)); metricSwitch.querySelector("[data-allocation-metric-label]").textContent=invested? "Aplicado":"Valor atual";

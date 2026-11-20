@@ -1,0 +1,847 @@
+/* ==========================================================================
+   PÁGINA: SHOWS
+   Reaproveita a base do dashboard de investimentos (painéis, KPIs, tabela)
+   e acrescenta o gráfico por ano, os rankings e o tooltip flutuante.
+   O HTML dinâmico é gerado por assets/js/shows.js.
+   ========================================================================== */
+
+@import url("investimentos/layout.css");  /* .html-dashboard, .dashboard-panel, .panel-heading, meta, fontes, voltar ao topo */
+@import url("investimentos/kpis.css");    /* .dashboard-kpis / .dashboard-kpi */
+@import url("investimentos/tables.css");  /* .dashboard-table e setas de ordenação */
+
+/* ---------- Barra superior: filtros em cascata + status ---------- */
+
+.shows-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 10px 14px;
+
+  /* Rótulo em cima do select */
+  & label {
+    display: grid;
+    gap: 4px;
+    color: var(--muted);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  & .dashboard-select {
+    width: 170px;
+    min-width: 0;
+    padding: 7px 8px;
+    font-size: 0.82rem;
+  }
+
+  /* Filtro em uso: rótulo e borda em destaque */
+  & label.is-active {
+    color: var(--primary);
+
+    & .dashboard-select {
+      border-color: var(--primary);
+    }
+  }
+
+  @media (max-width: 900px) {
+    padding: 8px 0;
+  }
+
+  /* Celular: 2 filtros por linha */
+  @media (max-width: 600px) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+
+    & .dashboard-select {
+      width: 100%;
+    }
+  }
+}
+
+.shows-filters-clear {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 34px;
+  padding: 0 4px;
+  font-size: 0.8rem;
+
+  &[hidden] {
+    display: none;
+  }
+
+  @media (max-width: 600px) {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+}
+
+.shows-dashboard .dashboard-kpi {
+  cursor: help;
+
+  &:focus-visible {
+    outline: 1px solid var(--primary);
+    outline-offset: -1px;
+  }
+}
+
+/* ---------- Grade: anos | artistas / locais | músicas ---------- */
+
+.shows-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(300px, 0.85fr);
+  grid-template-areas:
+    "years  artists"
+    "places songs";
+  gap: 18px;
+
+  & > .shows-panel-years { grid-area: years; }
+  & > .shows-panel-artists { grid-area: artists; }
+  & > .shows-panel-places { grid-area: places; }
+  & > .shows-panel-songs { grid-area: songs; }
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+    grid-template-areas: "years" "artists" "places" "songs";
+  }
+}
+
+/* O gráfico ocupa a altura que sobrar no painel (que acompanha o ranking ao lado) */
+.shows-panel-years {
+  display: flex;
+  flex-direction: column;
+}
+
+.shows-years-chart {
+  position: relative;
+  flex: 1;
+  min-height: 240px;
+
+  /* Absoluto: o SVG não influencia o tamanho do contêiner (evita laço no ResizeObserver) */
+  & svg {
+    position: absolute;
+    inset: 0;
+    display: block;
+    overflow: visible;
+  }
+
+  & > p {
+    margin: 0;
+  }
+}
+
+.shows-grid-line {
+  stroke: rgba(125, 224, 255, 0.1);
+  stroke-width: 1;
+}
+
+.shows-year-bar {
+  fill: var(--chart-principal);
+  transition: fill 0.15s ease, opacity 0.15s ease;
+}
+
+.shows-year-value {
+  fill: var(--text);
+  font-size: 11px;
+  font-weight: 800;
+  text-anchor: middle;
+}
+
+.shows-axis-label {
+  fill: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+  text-anchor: middle;
+}
+
+.shows-year-hit {
+  fill: transparent;
+  cursor: pointer;
+  outline: none;
+}
+
+.shows-year {
+  &:hover .shows-year-bar,
+  &:has(.shows-year-hit:focus-visible) .shows-year-bar,
+  &.is-selected .shows-year-bar {
+    fill: var(--primary);
+  }
+
+  &.is-selected .shows-axis-label {
+    fill: var(--primary);
+  }
+
+  &.is-dimmed .shows-year-bar {
+    opacity: 0.35;
+  }
+
+  &.is-dimmed:hover .shows-year-bar {
+    opacity: 0.8;
+  }
+}
+
+/* ---------- Rankings (artistas, locais, músicas) ---------- */
+
+.shows-ranking {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.shows-rank {
+  --rank-color: var(--primary);
+
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  border: 1px solid transparent;
+  cursor: help;
+  transition: background 0.15s ease, border-color 0.15s ease;
+
+  &:hover,
+  &:focus-visible {
+    outline: none;
+    border-color: var(--border);
+    background: var(--primary-tint);
+  }
+}
+
+.shows-panel-places .shows-rank { --rank-color: var(--success); }
+.shows-panel-songs .shows-rank { --rank-color: var(--accent); }
+
+.shows-rank-position {
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.shows-rank-body {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.shows-rank-name {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+  font-size: 0.86rem;
+
+  & b,
+  & small {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & b {
+    flex-shrink: 0;
+    max-width: 100%;
+    color: var(--text);
+  }
+
+  & small {
+    color: var(--muted);
+    font-size: 0.72rem;
+  }
+}
+
+.shows-rank-bar {
+  height: 4px;
+  background: rgba(125, 224, 255, 0.08);
+
+  & i {
+    display: block;
+    height: 100%;
+    background: var(--rank-color);
+    box-shadow: 0 0 10px -3px var(--rank-color);
+  }
+}
+
+.shows-rank-value {
+  min-width: 26px;
+  color: var(--text);
+  font-size: 0.95rem;
+  text-align: right;
+}
+
+/* Botões Local / Cidade / País */
+.shows-toggle {
+  display: inline-flex;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+}
+
+.shows-toggle-button {
+  min-height: 30px;
+  padding: 0 12px;
+  border: 0;
+  background: rgba(7, 22, 37, 0.48);
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 800;
+  cursor: pointer;
+
+  & + & {
+    border-left: 1px solid var(--border);
+  }
+
+  &:hover,
+  &.active {
+    background: var(--primary-tint-strong);
+    color: var(--primary);
+  }
+
+  @media (max-width: 430px) {
+    padding: 0 9px;
+  }
+}
+
+/* ---------- Histórico ---------- */
+
+.shows-history-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px 14px;
+
+  @media (max-width: 600px) {
+    justify-content: flex-start;
+    width: 100%;
+  }
+}
+
+.shows-panel-history .panel-heading {
+  @media (max-width: 600px) {
+    flex-direction: column;
+  }
+}
+
+.shows-search {
+  width: min(280px, 100%);
+
+  &:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+
+  @media (max-width: 600px) {
+    width: 100%;
+  }
+}
+
+.shows-table-wrap {
+  max-height: 560px;
+}
+
+/* Texto alinhado à esquerda; só a contagem de músicas e o link à direita */
+.shows-table {
+  & th,
+  & td {
+    text-align: left;
+  }
+
+  & th:nth-child(n + 6),
+  & td:nth-child(n + 6) {
+    text-align: right;
+  }
+
+  & tbody tr {
+    cursor: help;
+    transition: background 0.15s ease;
+
+    &:hover {
+      background: var(--primary-tint);
+    }
+  }
+
+  & td small {
+    display: inline;
+    color: var(--muted);
+  }
+}
+
+.shows-setlist-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--primary);
+  font-weight: 800;
+
+  &:hover {
+    color: #fff;
+  }
+}
+
+.dashboard-sources a {
+  color: var(--primary);
+  font-weight: 800;
+}
+
+/* ---------- Tooltip flutuante (posicionado pelo JS) ---------- */
+
+.shows-tooltip {
+  position: fixed;
+  z-index: 40;
+  display: none;
+  gap: 10px;
+  width: max-content;
+  max-width: min(340px, calc(100vw - 24px));
+  padding: 14px 16px;
+  border: 1px solid rgba(82, 227, 255, 0.72);
+  background: rgba(5, 20, 34, 0.9);
+  box-shadow: 0 18px 35px rgba(0, 0, 0, 0.42), 0 0 24px -12px var(--primary);
+  color: var(--text);
+  font-size: 0.8rem;
+  line-height: 1.4;
+  pointer-events: none;
+  backdrop-filter: blur(12px);
+
+  &.is-visible {
+    display: grid;
+  }
+
+  & h4 {
+    margin: 0;
+    color: var(--primary);
+    font-size: 0.98rem;
+  }
+
+  & p {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  & b {
+    color: var(--text);
+  }
+}
+
+.shows-tip-sub {
+  margin-top: -6px !important;
+  font-size: 0.74rem;
+}
+
+.shows-tip-hint {
+  color: var(--primary) !important;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.shows-tip-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 16px;
+  min-width: 250px;
+}
+
+.shows-tip-item {
+  display: grid;
+  gap: 1px;
+  padding-left: 10px;
+  border-left: 3px solid var(--primary);
+
+  & strong {
+    font-size: 1rem;
+  }
+
+  & span {
+    color: var(--muted);
+    font-size: 0.72rem;
+    font-weight: 800;
+  }
+
+  &.accent { border-color: var(--accent); }
+  &.success { border-color: var(--success); }
+  &.warm { border-color: var(--chart-gain); }
+}
+
+.shows-tip-list,
+.shows-tip-setlist {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.shows-tip-list,
+.shows-tip-setlist {
+  padding: 0;
+  list-style: none;
+}
+
+/* Setlist em duas colunas lidas de cima para baixo
+   (numeração explícita: o "Bis" não conta como música) */
+.shows-tip-setlist {
+  display: block;
+  columns: 2;
+  column-gap: 18px;
+  color: var(--text);
+
+  & li {
+    margin-bottom: 2px;
+    break-inside: avoid;
+  }
+
+  & span {
+    display: inline-block;
+    min-width: 20px;
+    color: var(--muted);
+    font-size: 0.68rem;
+    font-weight: 800;
+  }
+
+  & small {
+    color: var(--muted);
+    font-size: 0.68rem;
+  }
+}
+
+.shows-tip-more {
+  color: var(--muted);
+}
+
+.shows-tip-encore {
+  margin-top: 4px;
+  color: var(--accent);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  list-style: none;
+  text-transform: uppercase;
+}
+
+/* ==========================================================================
+   ÁLBUNS (dados do MusicBrainz via Apps Script; capas do Cover Art Archive)
+   ========================================================================== */
+
+.shows-albums-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(300px, 0.85fr);
+  gap: 18px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* A rosca acompanha a altura da parede de capas (sem espaço ocioso à esquerda):
+   height 0 tira o painel do cálculo da linha e min-height 100% o estica até ela.
+   A legenda rola por dentro. */
+.shows-panel-album-donut {
+  display: flex;
+  flex-direction: column;
+
+  & > [data-album-donut] {
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* O título não quebra por causa do select ao lado */
+  & .panel-heading h3 {
+    white-space: nowrap;
+  }
+
+  @media (min-width: 901px) {
+    height: 0;
+    min-height: max(100%, 560px);
+  }
+}
+
+/* Clicar no artista do ranking abre os álbuns dele na rosca */
+.shows-panel-artists .shows-rank {
+  cursor: pointer;
+}
+
+.shows-album-select {
+  width: 170px;
+  min-width: 0;
+
+  @media (max-width: 430px) {
+    max-width: 150px;
+  }
+}
+
+/* ---------- Capa (imagem ou ícone quando não há capa) ---------- */
+
+.album-cover {
+  display: block;
+  flex-shrink: 0;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  background:
+    linear-gradient(135deg, rgba(82, 227, 255, 0.06), rgba(160, 117, 255, 0.06)),
+    var(--surface-solid);
+
+  &.is-empty {
+    display: grid;
+    place-items: center;
+    color: var(--muted);
+    background: linear-gradient(135deg, rgba(82, 227, 255, 0.08), rgba(160, 117, 255, 0.08));
+  }
+
+  &.is-special {
+    color: var(--text);
+    background: var(--slice-color);
+    border-color: transparent;
+  }
+}
+
+.album-cover-sm {
+  width: 34px;
+  font-size: 1rem;
+}
+
+.album-cover-lg {
+  width: 100%;
+  font-size: 2.2rem;
+}
+
+.album-cover-tip {
+  width: 76px;
+  font-size: 1.6rem;
+}
+
+/* ---------- Parede de capas ---------- */
+
+/* 4 por linha no desktop (3 linhas para os 12 discos): a altura da parede
+   define a do painel da rosca ao lado */
+.album-wall {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+  }
+
+  @media (max-width: 430px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px 10px;
+  }
+}
+
+.album-card {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  cursor: help;
+  outline: none;
+
+  & small {
+    overflow: hidden;
+    color: var(--muted);
+    font-size: 0.7rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &:hover .album-cover,
+  &:focus-visible .album-cover {
+    border-color: var(--primary);
+    box-shadow: 0 0 22px -8px var(--primary);
+  }
+}
+
+.album-card-art {
+  position: relative;
+  display: block;
+  margin-bottom: 4px;
+
+  & .album-cover {
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+}
+
+.album-card-rank,
+.album-card-plays {
+  position: absolute;
+  top: 6px;
+  padding: 2px 7px;
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+.album-card-rank {
+  left: 6px;
+  color: var(--muted);
+  background: rgba(5, 20, 34, 0.86);
+}
+
+.album-card-plays {
+  right: 6px;
+  color: var(--ink);
+  background: var(--primary);
+}
+
+.album-card-title {
+  overflow: hidden;
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------- Rosca por álbum ---------- */
+
+.album-donut {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  justify-items: center;
+  gap: 18px;
+  height: 100%;
+}
+
+.album-donut-ring {
+  position: relative;
+  width: min(220px, 100%);
+
+  & svg {
+    display: block;
+    width: 100%;
+    overflow: visible;
+  }
+}
+
+.album-slice {
+  fill: none;
+  cursor: help;
+  outline: none;
+  transition: stroke-width 0.15s ease, opacity 0.15s ease;
+
+  &:hover,
+  &:focus-visible {
+    stroke-width: 36;
+  }
+}
+
+/* Destaque: ao passar em uma fatia, as outras esmaecem */
+.album-donut-ring svg:has(.album-slice:hover) .album-slice:not(:hover) {
+  opacity: 0.45;
+}
+
+.album-donut-center {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  pointer-events: none;
+
+  & b {
+    font-size: 1.6rem;
+    letter-spacing: -0.04em;
+  }
+
+  & small {
+    color: var(--muted);
+    font-size: 0.7rem;
+    font-weight: 700;
+  }
+}
+
+.album-legend {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  width: 100%;
+  min-height: 0;
+  margin: 0;
+  padding: 0 6px 0 0;
+  overflow-y: auto;
+  list-style: none;
+  scrollbar-gutter: stable;
+
+  /* Coluna única no celular: a legenda não estica a página indefinidamente */
+  @media (max-width: 900px) {
+    max-height: 360px;
+  }
+}
+
+.album-legend-item {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 8px 5px 6px;
+  border-left: 3px solid var(--slice-color);
+  cursor: help;
+  outline: none;
+  transition: background 0.15s ease;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--primary-tint);
+  }
+
+  & strong {
+    display: grid;
+    color: var(--text);
+    font-size: 0.9rem;
+    line-height: 1.15;
+    text-align: right;
+
+    & small {
+      color: var(--muted);
+      font-size: 0.68rem;
+    }
+  }
+}
+
+.album-legend-name {
+  display: grid;
+  min-width: 0;
+
+  & b,
+  & small {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & b {
+    color: var(--text);
+    font-size: 0.82rem;
+  }
+
+  & small {
+    color: var(--muted);
+    font-size: 0.7rem;
+  }
+}
+
+/* Cabeçalho do tooltip de álbum: capa + título */
+.shows-tip-album {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  & h4 {
+    margin: 0;
+  }
+
+  & .shows-tip-sub {
+    margin-top: 2px !important;
+  }
+}
+
+.shows-tooltip .shows-tip-grid:has(> :nth-child(3):last-child) {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  min-width: 300px;
+}

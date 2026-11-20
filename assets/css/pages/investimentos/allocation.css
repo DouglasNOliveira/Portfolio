@@ -71,7 +71,22 @@
   transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Ligada (aria-checked="true") = Valor atual: cursor à direita, em ciano */
+.state-switch:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+
+  &:hover {
+    color: var(--muted);
+  }
+}
+
+/* Slide Val. Bruta / Val. Líquida: no topo da legenda, alinhado à direita */
+.allocation-balance-switch {
+  justify-self: end;
+  margin-bottom: 4px;
+}
+
+/* Ligada (aria-checked="true") = valor padrão: cursor à direita, em ciano */
 .state-switch[aria-checked="true"] {
   & .state-switch-track {
     border-color: rgba(82, 227, 255, 0.45);
